@@ -1,1 +1,83 @@
-<p>carga-catalogo works!</p>
+<div class="fondo-modal">
+  <div class="modal-carga">
+    <div class="encabezado-modal">
+      <p class="titulo-modal">Cargar catálogo</p>
+      <button type="button" class="boton-cerrar" (click)="cancelar()" aria-label="Cerrar">✕</button>
+    </div>
+    <p class="descripcion-modal">
+      Sube un archivo CSV con las columnas <code>scientific_name</code> y <code>family</code>.
+    </p>
+
+    <label class="zona-archivo" for="archivo-csv">
+      @if (archivo()) {
+        <p class="nombre-archivo">{{ archivo()!.name }}</p>
+      } @else {
+        <p class="nombre-archivo placeholder">Selecciona o arrastra un archivo CSV</p>
+      }
+      <input id="archivo-csv" type="file" accept=".csv" (change)="onArchivoSeleccionado($event)" hidden />
+    </label>
+
+    <p class="etiqueta-seccion">Modo de importación</p>
+    <div class="opciones-modo">
+      <label class="tarjeta-modo" [class.seleccionada]="modo() === ModoImportacion.AGREGAR">
+        <input
+          type="radio"
+          name="modo"
+          [checked]="modo() === ModoImportacion.AGREGAR"
+          (change)="cambiarModo(ModoImportacion.AGREGAR)"
+        />
+        <span>
+          <span class="titulo-opcion">Agregar</span>
+          <span class="detalle-opcion">Suma nuevas y actualiza. No desactiva nada.</span>
+        </span>
+      </label>
+      <label class="tarjeta-modo" [class.seleccionada]="modo() === ModoImportacion.REEMPLAZAR">
+        <input
+          type="radio"
+          name="modo"
+          [checked]="modo() === ModoImportacion.REEMPLAZAR"
+          (change)="cambiarModo(ModoImportacion.REEMPLAZAR)"
+        />
+        <span>
+          <span class="titulo-opcion">Reemplazar</span>
+          <span class="detalle-opcion">Desactiva lo que no esté en el archivo.</span>
+        </span>
+      </label>
+    </div>
+
+    @if (errorGeneral()) {
+      <p class="mensaje-error">{{ errorGeneral() }}</p>
+    }
+
+    @if (!resultado()) {
+      <button
+        type="button"
+        class="boton-primario"
+        [disabled]="!archivo() || cargandoPreview()"
+        (click)="solicitarPreview()"
+      >
+        {{ cargandoPreview() ? 'Generando vista previa…' : 'Ver vista previa' }}
+      </button>
+    } @else {
+      <div class="separador"></div>
+
+      <app-vista-previa-importacion
+        [resultado]="resultado()!"
+        [forzarCategoria]="categoriaForzada()"
+        (categoriaCambiada)="onCategoriaCambiada($event)"
+      ></app-vista-previa-importacion>
+
+      <div class="acciones-modal">
+        <button type="button" class="boton-secundario" (click)="cancelar()">Cancelar</button>
+        <button
+          type="button"
+          class="boton-primario"
+          [disabled]="cargandoImportacion()"
+          (click)="onClicConfirmar()"
+        >
+          {{ cargandoImportacion() ? 'Importando…' : textoBotonConfirmar() }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

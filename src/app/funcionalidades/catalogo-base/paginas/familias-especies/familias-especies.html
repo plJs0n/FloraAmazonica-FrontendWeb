@@ -1,1 +1,130 @@
-<p>familias-especies works!</p>
+<div class="pagina-catalogo">
+  <div class="encabezado-catalogo">
+    <div>
+      <p class="titulo-catalogo">Catálogo base</p>
+      <p class="subtitulo-catalogo">
+        {{ especies().length }} especies · {{ totalFamilias() }} familias
+      </p>
+    </div>
+    <button type="button" class="boton-cargar" (click)="abrirModalCarga()">
+      Cargar catálogo
+    </button>
+  </div>
+
+  <div class="fila-filtros">
+    <input
+      type="text"
+      class="campo-busqueda"
+      placeholder="Buscar por especie o familia"
+      [ngModel]="textoBusqueda()"
+      (ngModelChange)="textoBusqueda.set($event)"
+    />
+    <select
+      class="selector-estado"
+      [ngModel]="filtroEstado()"
+      aria-label="Filtrar por estado"
+      (ngModelChange)="filtroEstado.set($event)"
+    >
+      <option value="todos">Todos los estados</option>
+      <option value="activas">Activas</option>
+      <option value="inactivas">Inactivas</option>
+    </select>
+  </div>
+
+  <div class="tabla-catalogo">
+    <div class="fila-encabezado">
+      <span>Especie</span>
+      <span>Familia</span>
+      <span>Estado</span>
+      <span></span>
+    </div>
+
+    @if (cargando()) {
+      <p class="mensaje-tabla">Cargando catálogo…</p>
+    } @else {
+      @for (especie of especiesFiltradas(); track especie.id) {
+        <div class="fila-especie">
+          <span>{{ especie.scientific_name }}</span>
+          <span class="texto-secundario">{{ especie.family }}</span>
+          <span>
+            <span class="estado" [class.inactivo]="!especie.is_active">
+              {{ especie.is_active ? 'Activa' : 'Inactiva' }}
+            </span>
+          </span>
+          <span class="acciones-fila">
+            <button type="button" class="boton-editar" (click)="abrirEdicion(especie)" aria-label="Editar especie">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                <path d="m15 5 4 4"></path>
+              </svg>
+              <span>Editar</span>
+            </button>
+          </span>
+        </div>
+      } @empty {
+        <p class="mensaje-tabla">No se encontraron especies.</p>
+      }
+    }
+  </div>
+</div>
+
+@if (mostrarModalCarga()) {
+  <app-carga-catalogo
+    (cerrar)="cerrarModalCarga()"
+    (importado)="onImportacionCompletada()"
+  ></app-carga-catalogo>
+}
+
+@if (especieEnEdicion()) {
+  <div class="fondo-modal-edicion">
+    <div class="modal-edicion">
+      <div class="encabezado-modal-edicion">
+        <p class="titulo-modal-edicion">Editar especie</p>
+        <button type="button" class="boton-cerrar-edicion" (click)="cerrarEdicion()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <label class="campo-edicion">
+        <span>Nombre científico</span>
+        <input
+          type="text"
+          [ngModel]="nombreCientificoEditado()"
+          (ngModelChange)="nombreCientificoEditado.set($event)"
+        />
+      </label>
+
+      <label class="campo-edicion">
+        <span>Familia</span>
+        <input
+          type="text"
+          [ngModel]="familiaEditada()"
+          (ngModelChange)="familiaEditada.set($event)"
+        />
+      </label>
+
+      <label class="campo-switch">
+        <input
+          type="checkbox"
+          [ngModel]="activaEditada()"
+          (ngModelChange)="activaEditada.set($event)"
+        />
+        <span>Especie activa</span>
+      </label>
+
+      @if (errorEdicion()) {
+        <p class="mensaje-error-edicion">{{ errorEdicion() }}</p>
+      }
+
+      <div class="acciones-modal-edicion">
+        <button type="button" class="boton-secundario-edicion" (click)="cerrarEdicion()">Cancelar</button>
+        <button
+          type="button"
+          class="boton-primario-edicion"
+          [disabled]="guardandoEdicion()"
+          (click)="guardarEdicion()"
+        >
+          {{ guardandoEdicion() ? 'Guardando…' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

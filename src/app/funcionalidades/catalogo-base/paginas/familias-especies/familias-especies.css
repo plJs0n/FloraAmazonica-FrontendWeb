@@ -1,0 +1,252 @@
+.pagina-catalogo {
+  padding: 1.5rem;
+}
+
+.encabezado-catalogo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.titulo-catalogo {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.subtitulo-catalogo {
+  font-size: 13px;
+  color: var(--texto-secundario, #6e6e6a);
+  margin: 0;
+}
+
+.boton-cargar {
+  background: var(--verde-oscuro, #2d6a45);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.boton-cargar:hover {
+  background: var(--verde-hover, #235538);
+}
+
+.fila-filtros {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.campo-busqueda {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d1d1;
+}
+
+.selector-estado {
+  width: 180px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d1d1;
+}
+
+.tabla-catalogo {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.fila-encabezado,
+.fila-especie {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 0.5fr;
+  padding: 10px 12px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.fila-encabezado {
+  background: var(--verde-claro, #e8f2ec);
+  font-weight: 500;
+  color: var(--texto-secundario, #6e6e6a);
+}
+
+.fila-especie {
+  border-top: 1px solid #eee;
+}
+
+.texto-secundario {
+  color: var(--texto-secundario, #6e6e6a);
+}
+
+.estado {
+  display: inline-block;
+  background: #e6f4ea;
+  color: #1e7a3d;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.estado.inactivo {
+  background: #f0f0ee;
+  color: #6e6e6a;
+}
+
+.acciones-fila {
+  text-align: right;
+}
+
+.boton-editar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--verde-claro, #e8f2ec);
+  border: 1px solid transparent;
+  color: var(--verde-oscuro, #2d6a45);
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.boton-editar svg {
+  flex-shrink: 0;
+}
+
+.boton-editar:hover {
+  background: #ffffff;
+  border-color: var(--verde-oscuro, #2d6a45);
+}
+
+.boton-editar:active {
+  transform: scale(0.97);
+}
+
+.mensaje-tabla {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--texto-secundario, #6e6e6a);
+  text-align: center;
+  margin: 0;
+}
+
+/* ── Modal de edición ─────────────────────────────────────────── */
+
+.fondo-modal-edicion {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-edicion {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.encabezado-modal-edicion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.titulo-modal-edicion {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.boton-cerrar-edicion {
+  background: none;
+  border: none;
+  color: var(--texto-secundario, #6e6e6a);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.campo-edicion {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.campo-edicion input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d1d1;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.campo-edicion input:focus {
+  outline: none;
+  border-color: var(--verde-oscuro, #2d6a45);
+}
+
+.campo-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.mensaje-error-edicion {
+  font-size: 12px;
+  color: #c0392b;
+  margin: 0 0 12px;
+}
+
+.acciones-modal-edicion {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.boton-secundario-edicion {
+  background: transparent;
+  border: 1px solid #d1d1d1;
+  color: var(--texto-secundario, #6e6e6a);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.boton-primario-edicion {
+  background: var(--verde-oscuro, #2d6a45);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.boton-primario-edicion:hover {
+  background: var(--verde-hover, #235538);
+}
+
+.boton-primario-edicion:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

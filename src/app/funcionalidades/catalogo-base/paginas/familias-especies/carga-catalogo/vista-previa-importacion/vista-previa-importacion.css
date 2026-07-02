@@ -1,0 +1,123 @@
+.etiqueta-seccion {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 8px;
+  color: #f1efe8;
+}
+
+.grilla-contadores {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tarjeta-contador {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  background: #232322;
+}
+
+.tarjeta-contador.nuevo {
+  background: #1e2a20;
+}
+.tarjeta-contador.nuevo .numero-contador {
+  color: #97c459;
+}
+
+.tarjeta-contador.actualizado {
+  background: #20242f;
+}
+.tarjeta-contador.actualizado .numero-contador {
+  color: #85b7eb;
+}
+
+.tarjeta-contador.conservado .numero-contador {
+  color: #a8a69f;
+}
+
+.tarjeta-contador.desactivado {
+  background: #2a201d;
+}
+.tarjeta-contador.desactivado .numero-contador {
+  color: #e29a7b;
+}
+
+.tarjeta-contador.activa {
+  border-color: currentColor;
+}
+
+.numero-contador {
+  display: block;
+  font-size: 18px;
+  font-weight: 500;
+  color: #f1efe8;
+}
+
+.etiqueta-contador {
+  display: block;
+  font-size: 11px;
+  color: #a8a69f;
+  margin-top: 2px;
+}
+
+.buscador-categoria {
+  margin-bottom: 8px;
+}
+
+.buscador-categoria input {
+  width: 100%;
+  background: #1e1e1d;
+  border: 0.5px solid #3a3a38;
+  color: #f1efe8;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.lista-detalle {
+  border: 0.5px solid #3a3a38;
+  border-radius: 8px;
+  max-height: 160px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.fila-detalle {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 0.5px solid #3a3a38;
+  font-size: 13px;
+  color: #f1efe8;
+}
+
+.fila-detalle:first-child {
+  border-top: none;
+}
+
+.familia-detalle {
+  color: #a8a69f;
+}
+
+.sin-resultados {
+  font-size: 12px;
+  color: #6e6e6a;
+  padding: 12px;
+  margin: 0;
+}
+
+.aviso-errores {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #2a201d;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #f0997b;
+}

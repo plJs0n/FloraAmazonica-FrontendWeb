@@ -1,0 +1,150 @@
+.fondo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-carga {
+  background: #171716;
+  color: #f1efe8;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 520px;
+  padding: 1.5rem;
+  border: 0.5px solid #3a3a38;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.encabezado-modal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.titulo-modal {
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0;
+}
+
+.boton-cerrar {
+  background: none;
+  border: none;
+  color: #a8a69f;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.descripcion-modal {
+  font-size: 13px;
+  color: #a8a69f;
+  margin: 0 0 20px;
+}
+
+.zona-archivo {
+  display: block;
+  border: 1px dashed #4a4a47;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.nombre-archivo {
+  font-size: 13px;
+  margin: 0;
+  color: #f1efe8;
+}
+
+.nombre-archivo.placeholder {
+  color: #a8a69f;
+}
+
+.etiqueta-seccion {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.opciones-modo {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tarjeta-modo {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid #4a4a47;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.tarjeta-modo.seleccionada {
+  background: #232322;
+}
+
+.titulo-opcion {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.detalle-opcion {
+  display: block;
+  font-size: 12px;
+  color: #a8a69f;
+}
+
+.mensaje-error {
+  font-size: 12px;
+  color: #f0997b;
+  margin: 0 0 12px;
+}
+
+.boton-primario {
+  width: 100%;
+  background: #f1efe8;
+  color: #171716;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.boton-primario:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boton-secundario {
+  background: transparent;
+  border: 0.5px solid #4a4a47;
+  color: #f1efe8;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.separador {
+  border-top: 0.5px solid #3a3a38;
+  margin: 16px 0;
+}
+
+.acciones-modal {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}

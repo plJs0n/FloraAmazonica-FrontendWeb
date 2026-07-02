@@ -1,1 +1,44 @@
-<p>vista-previa-importacion works!</p>
+<p class="etiqueta-seccion">Vista previa</p>
+
+<div class="grilla-contadores">
+  @for (categoria of categorias; track categoria.clave) {
+    <button
+      type="button"
+      class="tarjeta-contador"
+      [class]="categoria.clave"
+      [class.activa]="categoriaActiva() === categoria.clave"
+      (click)="alternarCategoria(categoria.clave)"
+    >
+      <span class="numero-contador">{{ contadores()[categoria.clave] }}</span>
+      <span class="etiqueta-contador">{{ categoria.etiqueta }}</span>
+    </button>
+  }
+</div>
+
+@if (categoriaActiva()) {
+  <div class="buscador-categoria">
+    <input
+      type="text"
+      placeholder="Buscar en esta categoría"
+      [ngModel]="textoBusqueda()"
+      (ngModelChange)="textoBusqueda.set($event)"
+    />
+  </div>
+
+  <div class="lista-detalle">
+    @for (fila of filasCategoriaActiva(); track fila.scientific_name) {
+      <div class="fila-detalle">
+        <span>{{ fila.scientific_name }}</span>
+        <span class="familia-detalle">{{ fila.family }}</span>
+      </div>
+    } @empty {
+      <p class="sin-resultados">Sin resultados.</p>
+    }
+  </div>
+}
+
+@if (resultado.errores.length > 0) {
+  <div class="aviso-errores">
+    {{ resultado.errores.length }} filas con errores — no se importarán.
+  </div>
+}
