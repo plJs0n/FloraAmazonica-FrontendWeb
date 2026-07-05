@@ -149,6 +149,15 @@
   </app-modal-seccion>
 }
 
+@if (modalOpcionAbierto && opcionEnEdicion) {
+  <app-modal-opcion
+    [valorInicial]="opcionEnEdicion.opcion?.option_value ?? ''"
+    [titulo]="opcionEnEdicion.opcion ? 'Editar opción' : 'Nueva opción'"
+    (confirmar)="onConfirmarModalOpcion($event)"
+    (cerrar)="cerrarModalOpcion()">
+  </app-modal-opcion>
+}
+
 @if (mensaje) {
   <div class="toast">{{ mensaje }}</div>
 }

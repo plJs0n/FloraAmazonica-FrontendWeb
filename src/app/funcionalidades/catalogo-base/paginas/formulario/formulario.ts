@@ -22,6 +22,7 @@ import { Seccion } from '../../modelos/seccion.modelo';
 import { ModalCampo, ResultadoModalCampo } from '../../componentes/modal-campo/modal-campo';
 import { BloqueCampo } from '../../componentes/bloque-campo/bloque-campo';
 import { ModalSeccion } from '../../componentes/modal-seccion/modal-seccion';
+import { ModalOpcion, ResultadoModalOpcion } from '../../componentes/modal-opcion/modal-opcion';
 
 export type ItemFormulario =
   | { tipo: 'seccion'; seccion: Seccion; campos: CampoMorfologico[] }
@@ -29,7 +30,7 @@ export type ItemFormulario =
 
 @Component({
   selector: 'app-formulario',
-  imports: [ModalCampo, BloqueCampo, FormsModule, ModalSeccion, DragDropModule],
+  imports: [ModalCampo, BloqueCampo, FormsModule, ModalSeccion, DragDropModule, ModalOpcion],
   templateUrl: './formulario.html',
   styleUrl: './formulario.css',
 })
@@ -61,6 +62,10 @@ export class Formulario implements OnInit {
   // Modal sección
   modalSeccionAbierto = false;
   seccionEnEdicion: Seccion | null = null;
+
+  // Modal opción
+  modalOpcionAbierto = false;
+  opcionEnEdicion: { campo: CampoMorfologico; opcion?: ValorMorfologico } | null = null;
 
   ngOnInit(): void {
     this.cargarTodo(this.habitoActual);
@@ -512,10 +517,39 @@ export class Formulario implements OnInit {
 
     this.servicio.actualizarMetadatosCampo(ids, metadatos).subscribe({
       next: () => {
-        this.cerrarModal();
-        this.limpiarCacheHabitos([this.habitoActual, ...this.habitosGemelos]);
-        this.recargarActual();
-        this.mostrarMensaje('Campo actualizado');
+        if (r.agregarOtro) {
+          const nuevoOrden = campo.opciones.length
+            ? Math.max(...campo.opciones.map((o) => o.display_order)) + 1
+            : 0;
+
+          this.servicio.crear({
+            habit: this.habitoActual,
+            section: campo.section,
+            field_name: campo.field_name,
+            option_value: 'Otro',
+            selection_type: campo.selection_type,
+            field_type: campo.field_type,
+            is_required: campo.is_required,
+            display_order: nuevoOrden,
+          }).subscribe({
+            next: () => {
+              this.cerrarModal();
+              this.limpiarCacheHabitos([this.habitoActual, ...this.habitosGemelos]);
+              this.recargarActual();
+              this.mostrarMensaje('Campo actualizado');
+            },
+            error: (err) => {
+              this.cargando = false;
+              this.mostrarMensaje(this.textoError(err));
+              this.refrescar();
+            },
+          });
+        } else {
+          this.cerrarModal();
+          this.limpiarCacheHabitos([this.habitoActual, ...this.habitosGemelos]);
+          this.recargarActual();
+          this.mostrarMensaje('Campo actualizado');
+        }
       },
       error: (err) => {
         this.cargando = false;
@@ -577,73 +611,98 @@ export class Formulario implements OnInit {
   }
 
   agregarOpcion(campo: CampoMorfologico): void {
-    const valor = prompt('Nombre de la nueva opción:');
-    if (!valor || !valor.trim()) return;
-
-    const valorLimpio = valor.trim();
-    const valoresHabito = this.valoresPorHabito[this.habitoActual] ?? [];
-
-    if (this.servicio.existeDuplicado(valoresHabito, campo.section, campo.field_name, valorLimpio)) {
-      this.mostrarMensaje('Esa opción ya existe en este campo');
-      return;
-    }
-
-    const nuevoOrden = campo.opciones.length
-      ? Math.max(...campo.opciones.map((o) => o.display_order)) + 1
-      : 0;
-
-    this.cargando = true;
+    this.opcionEnEdicion = { campo };
+    this.modalOpcionAbierto = true;
     this.refrescar();
-
-    this.servicio.crear({
-      habit: this.habitoActual,
-      section: campo.section,
-      field_name: campo.field_name,
-      option_value: valorLimpio,
-      selection_type: campo.selection_type,
-      field_type: campo.field_type,
-      is_required: campo.is_required,
-      display_order: nuevoOrden,
-    }).subscribe({
-      next: () => {
-        this.recargarActual();
-        this.mostrarMensaje('Opción agregada');
-      },
-      error: (err) => {
-        this.cargando = false;
-        this.mostrarMensaje(this.textoError(err));
-        this.refrescar();
-      },
-    });
   }
 
   editarOpcion(opcion: ValorMorfologico): void {
-    const valor = prompt('Editar opción:', opcion.option_value);
-    if (!valor || !valor.trim() || valor.trim() === opcion.option_value) return;
-
-    const valorLimpio = valor.trim();
-    const valoresHabito = this.valoresPorHabito[this.habitoActual] ?? [];
-
-    if (this.servicio.existeDuplicado(valoresHabito, opcion.section, opcion.field_name, valorLimpio, opcion.id)) {
-      this.mostrarMensaje('Esa opción ya existe en este campo');
-      return;
-    }
-
-    this.cargando = true;
+    const campo = this.campos.find((c) => c.clave === this.servicio.claveCampo(opcion.section, opcion.field_name));
+    if (!campo) return;
+    this.opcionEnEdicion = { campo, opcion };
+    this.modalOpcionAbierto = true;
     this.refrescar();
-
-    this.servicio.actualizar(opcion.id, { option_value: valorLimpio }).subscribe({
-      next: () => {
-        this.recargarActual();
-        this.mostrarMensaje('Opción actualizada');
-      },
-      error: (err) => {
-        this.cargando = false;
-        this.mostrarMensaje(this.textoError(err));
-        this.refrescar();
-      },
-    });
   }
+
+  cerrarModalOpcion(): void {
+    this.modalOpcionAbierto = false;
+    this.opcionEnEdicion = null;
+    this.refrescar();
+  }
+
+  onConfirmarModalOpcion(resultado: ResultadoModalOpcion): void {
+    if (!this.opcionEnEdicion) return;
+    const { campo, opcion } = this.opcionEnEdicion;
+
+    if (opcion) {
+      // Editar
+      if (resultado.valor === opcion.option_value) {
+        this.cerrarModalOpcion();
+        return;
+      }
+
+      const valoresHabito = this.valoresPorHabito[this.habitoActual] ?? [];
+      if (this.servicio.existeDuplicado(valoresHabito, opcion.section, opcion.field_name, resultado.valor, opcion.id)) {
+        this.mostrarMensaje('Esa opción ya existe en este campo');
+        this.cerrarModalOpcion();
+        return;
+      }
+
+      this.cargando = true;
+      this.cerrarModalOpcion();
+      this.refrescar();
+
+      this.servicio.actualizar(opcion.id, { option_value: resultado.valor }).subscribe({
+        next: () => {
+          this.recargarActual();
+          this.mostrarMensaje('Opción actualizada');
+        },
+        error: (err) => {
+          this.cargando = false;
+          this.mostrarMensaje(this.textoError(err));
+          this.refrescar();
+        },
+      });
+    } else {
+      // Agregar
+      const valoresHabito = this.valoresPorHabito[this.habitoActual] ?? [];
+      if (this.servicio.existeDuplicado(valoresHabito, campo.section, campo.field_name, resultado.valor)) {
+        this.mostrarMensaje('Esa opción ya existe en este campo');
+        this.cerrarModalOpcion();
+        return;
+      }
+
+      const nuevoOrden = campo.opciones.length
+        ? Math.max(...campo.opciones.map((o) => o.display_order)) + 1
+        : 0;
+
+      this.cargando = true;
+      this.cerrarModalOpcion();
+      this.refrescar();
+
+      this.servicio.crear({
+        habit: this.habitoActual,
+        section: campo.section,
+        field_name: campo.field_name,
+        option_value: resultado.valor,
+        selection_type: campo.selection_type,
+        field_type: campo.field_type,
+        is_required: campo.is_required,
+        display_order: nuevoOrden,
+      }).subscribe({
+        next: () => {
+          this.recargarActual();
+          this.mostrarMensaje('Opción agregada');
+        },
+        error: (err) => {
+          this.cargando = false;
+          this.mostrarMensaje(this.textoError(err));
+          this.refrescar();
+        },
+      });
+    }
+  }
+
 
   // ---- Helpers ----
 

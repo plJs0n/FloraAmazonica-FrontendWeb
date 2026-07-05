@@ -1,0 +1,30 @@
+<!-- funcionalidades/catalogo-base/componentes/modal-opcion/modal-opcion.html -->
+
+<div class="fondo-modal" (click)="onCerrar()">
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <div class="cabecera">
+      <h2>{{ titulo }}</h2>
+      <button class="btn-icono" type="button" (click)="onCerrar()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="cuerpo">
+      <div class="grupo-campo">
+        <label class="etiqueta" for="valor">Nombre de la opción</label>
+        <input id="valor" class="entrada" type="text" [(ngModel)]="valor"
+               placeholder="Ej: Recto"
+               (keydown.enter)="onConfirmar()" />
+      </div>
+    </div>
+
+    <div class="pie">
+      <button type="button" class="btn-secundario" (click)="onCerrar()">Cancelar</button>
+      <button type="button" class="btn-primario"
+              [disabled]="!puedeConfirmar()"
+              (click)="onConfirmar()">
+        Confirmar
+      </button>
+    </div>
+
+  </div>
+</div>

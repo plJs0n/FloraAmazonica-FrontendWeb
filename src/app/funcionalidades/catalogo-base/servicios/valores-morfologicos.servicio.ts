@@ -142,7 +142,13 @@ export class ValoresMorfologicosServicio {
 
     const campos = [...mapa.values()];
     for (const campo of campos) {
-      campo.opciones.sort((a, b) => a.display_order - b.display_order);
+      campo.opciones.sort((a, b) => {
+        const aEsOtro = a.option_value.trim().toLowerCase() === 'otro';
+        const bEsOtro = b.option_value.trim().toLowerCase() === 'otro';
+        if (aEsOtro) return 1;
+        if (bEsOtro) return -1;
+        return a.display_order - b.display_order;
+      });
     }
     campos.sort((a, b) => a.display_order - b.display_order);
     return campos;
