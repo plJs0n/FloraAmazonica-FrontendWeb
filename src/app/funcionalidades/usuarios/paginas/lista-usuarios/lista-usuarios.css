@@ -102,3 +102,21 @@
   color: #6b7a70;
   font-size: 0.95rem;
 }
+
+@media (max-width: 640px) {
+  .pagina-usuarios {
+    padding: 1rem;
+  }
+
+  .encabezado-pagina h2 {
+    font-size: 2rem;
+  }
+
+  .campo-busqueda {
+    min-width: 100%;
+  }
+
+  .selector-filtro {
+    flex: 1;
+  }
+}

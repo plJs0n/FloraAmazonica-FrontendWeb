@@ -12,10 +12,6 @@ export class UsuariosServicio {
     return this.http.get<UsuarioAdmin[]>(this.baseUrl);
   }
 
-  listarSolicitudesPendientes() {
-    return this.http.get<UsuarioAdmin[]>(`${this.baseUrl}/solicitudes`);
-  }
-
   cambiarActivacion(id: string, is_active: boolean) {
     return this.http.patch<UsuarioAdmin>(`${this.baseUrl}/${id}/activar`, { is_active });
   }

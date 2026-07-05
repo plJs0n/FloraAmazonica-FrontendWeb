@@ -3,39 +3,41 @@
   align-items: center;
   justify-content: space-between;
   height: 64px;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8e4;
+  gap: 1rem;
 }
 
 .encabezado-titulo {
   font-family: 'Almendra SC', serif;
   font-weight: 700;
   color: var(--verde-oscuro);
-  font-size: 2.5rem;
+  font-size: 1.6rem;
+  white-space: nowrap;
 }
 
 .encabezado-usuario {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .encabezado-nombre {
   font-weight: 500;
-  margin-right: 3rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  white-space: nowrap;
 }
 
 .encabezado-rol {
-  font-size: 0.75rem;
   text-transform: capitalize;
   color: #6b7a70;
   background-color: var(--verde-claro);
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  margin-right: 3rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .encabezado-logout {
@@ -46,9 +48,42 @@
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .encabezado-logout:hover {
   background-color: var(--verde-hover);
   color: #ffffff;
+}
+
+
+@media (max-width: 900px) {
+  .encabezado {
+    padding: 0 1rem;
+  }
+
+  .encabezado-titulo {
+    font-size: 1.3rem;
+  }
+
+  .encabezado-nombre-oculto {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .encabezado {
+    padding: 0.5rem 1rem;
+    height: auto;
+    flex-wrap: wrap;
+  }
+
+  .encabezado-titulo {
+    font-size: 1.2rem;
+  }
+
+  .encabezado-usuario {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
 }

@@ -28,10 +28,8 @@
       <option value="consultor" [selected]="filtro().rol === 'consultor'">Consultor</option>
       <option value="administrador" [selected]="filtro().rol === 'administrador'">Administrador</option>
     </select>
-    <select
-      class="selector-filtro"
-      aria-label="Filtrar por estado"
-      (change)="onCambiarFiltroEstado($event)">
+
+    <select class="selector-filtro" aria-label="Filtrar por estado" (change)="onCambiarFiltroEstado($event)">
       <option value="todos" [selected]="filtro().estado === 'todos'">Todos los estados</option>
       <option value="activos" [selected]="filtro().estado === 'activos'">Activos</option>
       <option value="inactivos" [selected]="filtro().estado === 'inactivos'">Inactivos</option>
@@ -47,6 +45,7 @@
       @for (usuario of usuariosFiltrados(); track usuario.id) {
         <app-tarjeta-usuario
           [usuario]="usuario"
+          [esMiCuenta]="usuario.id === obtenerIdActual()"
           (cambiarEstado)="onCambiarEstado($event)"
           (cambiarRol)="onCambiarRol($event)">
         </app-tarjeta-usuario>

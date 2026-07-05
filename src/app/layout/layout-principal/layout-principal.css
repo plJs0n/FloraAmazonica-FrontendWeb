@@ -17,3 +17,13 @@
   padding: 2rem;
   background-color: #f7f9f8;
 }
+
+@media (max-width: 768px) {
+  .layout-contenedor {
+    flex-direction: column;
+  }
+
+  .layout-contenido {
+    padding: 1rem;
+  }
+}

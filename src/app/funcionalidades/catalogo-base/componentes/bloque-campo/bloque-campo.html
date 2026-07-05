@@ -1,0 +1,57 @@
+<!-- funcionalidades/catalogo-base/componentes/bloque-campo/bloque-campo.html -->
+
+<div class="bloque" [class.inactivo]="!campo.activo">
+
+  <div class="bloque-cabecera">
+    <span class="asa-arrastre" title="Arrastrar para reordenar" aria-hidden="true">⠿</span>
+
+    <div class="bloque-info">
+      <p class="bloque-titulo">{{ campo.field_name }}</p>
+      <div class="bloque-meta">
+        <span class="seccion">{{ campo.section }}</span>
+        @if (campo.is_required) {
+          <span class="badge badge-obligatorio">Obligatorio</span>
+        }
+        @if (campo.selection_type === 'multiple') {
+          <span class="badge badge-multiple">Múltiple</span>
+        } @else {
+          <span class="badge badge-neutro">Única</span>
+        }
+        @if (!campo.activo) {
+          <span class="badge badge-neutro">Desactivado</span>
+        }
+      </div>
+    </div>
+
+    <div class="bloque-acciones">
+      <button class="btn-icono" type="button" title="Editar campo" (click)="onEditarCampo()">✎</button>
+      <button class="btn-icono" type="button"
+              [title]="campo.activo ? 'Desactivar campo' : 'Activar campo'"
+              (click)="onAlternarCampo()">
+        {{ campo.activo ? '◉' : '○' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="bloque-opciones">
+    @for (opcion of campo.opciones; track opcion.id) {
+      <div class="fila-opcion" [class.opcion-inactiva]="!opcion.is_active">
+        <span class="marca" [class.marca-multiple]="campo.selection_type === 'multiple'"></span>
+        <span class="texto-opcion">{{ opcion.option_value }}</span>
+        <div class="acciones-opcion">
+          <button class="btn-mini" type="button" title="Editar opción"
+                  (click)="onEditarOpcion(opcion)">✎</button>
+          <button class="btn-mini" type="button"
+                  [title]="opcion.is_active ? 'Desactivar opción' : 'Activar opción'"
+                  (click)="onAlternarOpcion(opcion)">
+            {{ opcion.is_active ? '◉' : '○' }}
+          </button>
+        </div>
+      </div>
+    }
+    <button class="btn-agregar-opcion" type="button" (click)="onAgregarOpcion()">
+      + Agregar opción
+    </button>
+  </div>
+
+</div>

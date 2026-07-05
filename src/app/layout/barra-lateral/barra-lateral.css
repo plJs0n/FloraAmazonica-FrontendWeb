@@ -116,3 +116,68 @@
 .barra-lateral-subenlace:hover {
   opacity: 90%;
 }
+
+
+@media (max-width: 768px) {
+  .barra-lateral {
+    width: 100%;
+    min-height: unset;
+    flex-direction: row;
+  }
+
+  .barra-lateral-logo {
+    display: none;
+  }
+
+  .barra-lateral-nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 0;
+    gap: 0;
+    width: 100%;
+  }
+
+  .barra-lateral-enlace {
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
+    text-align: center;
+    flex: 1;
+  }
+
+  .grupo-nav {
+    position: relative;
+    flex: 1;
+  }
+
+  .barra-lateral-enlace-padre {
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 180px;
+    background-color: var(--verde-oscuro);
+    z-index: 100;
+    border-radius: 0 0 0.5rem 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .barra-lateral-subenlace {
+    padding: 0.85rem 1.25rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* En móvil el hover no funciona bien, solo el clic fija el grupo */
+  .grupo-nav:hover .submenu {
+    max-height: 0;
+  }
+
+  .grupo-nav.grupo-fijado .submenu {
+    max-height: 200px;
+  }
+}

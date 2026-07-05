@@ -1,5 +1,6 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { UsuariosServicio } from '../../servicios/usuarios.servicio';
+import { AutenticacionServicio } from '../../../../core/servicios/autenticacion.servicio';
 import { UsuarioAdmin, RolUsuario, FiltroUsuarios } from '../../modelos/usuario-admin.modelo';
 import { TarjetaUsuario } from '../../componentes/tarjeta-usuario/tarjeta-usuario';
 import { ModalSolicitudes } from '../../componentes/modal-solicitudes/modal-solicitudes';
@@ -19,6 +20,7 @@ const FILTRO_INICIAL: FiltroUsuarios = {
 })
 export class ListaUsuarios implements OnInit {
   private usuariosServicio = inject(UsuariosServicio);
+  private autenticacionServicio = inject(AutenticacionServicio);
 
   usuarios = signal<UsuarioAdmin[]>([]);
   solicitudes = signal<UsuarioAdmin[]>([]);
@@ -30,14 +32,12 @@ export class ListaUsuarios implements OnInit {
     const { rol, estado, busqueda } = this.filtro();
     const termino = busqueda.trim().toLowerCase();
 
-    // El listado principal solo muestra cuentas ya confirmadas alguna vez;
-    // las solicitudes (confirmed_at === null) viven únicamente en el panel de solicitudes.
     return this.usuarios()
-      .filter((u) => u.confirmed_at !== null)
+      .filter((u) => u.status !== 'pendiente')
       .filter((u) => rol === 'todos' || u.role === rol)
       .filter((u) => {
         if (estado === 'todos') return true;
-        return estado === 'activos' ? u.is_active : !u.is_active;
+        return estado === 'activos' ? u.status === 'activo' : u.status === 'inactivo';
       })
       .filter((u) => {
         if (!termino) return true;
@@ -53,23 +53,17 @@ export class ListaUsuarios implements OnInit {
 
   ngOnInit() {
     this.cargarUsuarios();
-    this.cargarSolicitudes();
   }
 
   cargarUsuarios() {
     this.cargandoLista.set(true);
     this.usuariosServicio.listarTodos().subscribe({
       next: (usuarios) => {
-        this.usuarios.set(usuarios);
+        this.usuarios.set(usuarios.filter((u) => u.status !== 'pendiente'));
+        this.solicitudes.set(usuarios.filter((u) => u.status === 'pendiente'));
         this.cargandoLista.set(false);
       },
       error: () => this.cargandoLista.set(false),
-    });
-  }
-
-  cargarSolicitudes() {
-    this.usuariosServicio.listarSolicitudesPendientes().subscribe({
-      next: (solicitudes) => this.solicitudes.set(solicitudes),
     });
   }
 
@@ -98,7 +92,6 @@ export class ListaUsuarios implements OnInit {
 
   onSolicitudConfirmada() {
     this.cargarUsuarios();
-    this.cargarSolicitudes();
   }
 
   onSolicitudEliminada(id: string) {
@@ -106,7 +99,11 @@ export class ListaUsuarios implements OnInit {
   }
 
   onCambiarEstado(usuario: UsuarioAdmin) {
-    this.usuariosServicio.cambiarActivacion(usuario.id, !usuario.is_active).subscribe({
+    const usuarioActual = this.autenticacionServicio.obtenerUsuario();
+    if (usuarioActual?.id === usuario.id) return;
+
+    const nuevoEstado = usuario.status === 'activo' ? false : true;
+    this.usuariosServicio.cambiarActivacion(usuario.id, nuevoEstado).subscribe({
       next: (actualizado) => this.reemplazarUsuario(actualizado),
     });
   }
@@ -115,6 +112,10 @@ export class ListaUsuarios implements OnInit {
     this.usuariosServicio.actualizarRol(evento.usuario.id, { role: evento.rol }).subscribe({
       next: (actualizado) => this.reemplazarUsuario(actualizado),
     });
+  }
+
+  obtenerIdActual(): string | null {
+    return this.autenticacionServicio.obtenerUsuario()?.id ?? null;
   }
 
   private reemplazarUsuario(actualizado: UsuarioAdmin) {

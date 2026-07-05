@@ -4,6 +4,9 @@
       {{ usuario.first_name }} {{ usuario.paternal_last_name }} {{ usuario.maternal_last_name ?? '' }}
     </span>
     <span class="tarjeta-usuario-email">{{ usuario.email }}</span>
+    @if (esMiCuenta) {
+      <span class="tarjeta-usuario-yo">Mi cuenta</span>
+    }
   </div>
 
   <div class="tarjeta-usuario-controles">
@@ -15,19 +18,21 @@
 
     <span
       class="tarjeta-usuario-estado"
-      [class.tarjeta-usuario-estado-activo]="usuario.is_active"
-      [class.tarjeta-usuario-estado-inactivo]="!usuario.is_active"
+      [class.tarjeta-usuario-estado-activo]="usuario.status === 'activo'"
+      [class.tarjeta-usuario-estado-inactivo]="usuario.status === 'inactivo'"
     >
-      {{ usuario.is_active ? 'Activo' : 'Inactivo' }}
+      {{ usuario.status === 'activo' ? 'Activo' : 'Inactivo' }}
     </span>
 
     <button
       class="tarjeta-usuario-boton"
-      [class.tarjeta-usuario-boton-desactivar]="usuario.is_active"
+      [class.tarjeta-usuario-boton-desactivar]="usuario.status === 'activo'"
+      [disabled]="esMiCuenta"
+      [title]="esMiCuenta ? 'No puedes desactivar tu propia cuenta' : ''"
       (click)="alCambiarEstado()"
       aria-label="Cambiar estado"
     >
-      {{ usuario.is_active ? 'Desactivar' : 'Activar' }}
+      {{ usuario.status === 'activo' ? 'Desactivar' : 'Activar' }}
     </button>
   </div>
 </div>

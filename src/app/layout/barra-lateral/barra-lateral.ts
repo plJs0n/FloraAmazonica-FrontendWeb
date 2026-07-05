@@ -36,6 +36,10 @@ export class BarraLateral {
     return this.grupoFijado() === etiqueta;
   }
 
+  cerrarGrupo(): void {
+    this.grupoFijado.set(null);
+  }
+
   private obtenerElementosNav(): ElementoNav[] {
     switch (this.rol) {
       case 'administrador':

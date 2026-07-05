@@ -5,5 +5,8 @@ export interface Usuario {
   maternal_last_name: string | null;
   email: string;
   role: 'administrador' | 'registrador' | 'validador' | 'consultor';
-  is_active: boolean;
+  status: 'pendiente' | 'activo' | 'inactivo';
+  avatar_url: string | null;
+  institution: string | null;
+  position: string | null;
 }

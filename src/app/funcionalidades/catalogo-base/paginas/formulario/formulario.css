@@ -1,0 +1,171 @@
+/* funcionalidades/catalogo-base/paginas/formulario/formulario.css */
+
+.pagina {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 4rem;
+}
+
+.cabecera-pagina {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.cabecera-pagina h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+.subtitulo {
+  font-size: 0.88rem;
+  color: #888;
+  margin: 0.3rem 0 0;
+}
+
+.btn-nuevo {
+  flex-shrink: 0;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--verde-oscuro);
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-nuevo:hover {
+  background: var(--verde-hover);
+}
+
+.tarjeta-catalogo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.95rem 1.15rem;
+  border: 1px solid #e5e2db;
+  border-radius: 12px;
+  background: #fff;
+  text-decoration: none;
+  margin-bottom: 1.75rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.tarjeta-catalogo:hover {
+  border-color: var(--verde-oscuro);
+  background: var(--verde-claro);
+}
+.tarjeta-titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+.tarjeta-desc {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0.2rem 0 0;
+}
+.tarjeta-flecha {
+  color: var(--verde-oscuro);
+  font-size: 1.1rem;
+}
+
+.etiqueta-seccion {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.7rem;
+}
+.habito-nombre {
+  text-transform: capitalize;
+}
+
+.pills-habito {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+.pill {
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #d8d5cd;
+  background: #fff;
+  font-size: 0.83rem;
+  cursor: pointer;
+  color: #666;
+  text-transform: capitalize;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.pill:hover:not(.activa) {
+  background: #f2f0ea;
+}
+.pill.activa {
+  background: var(--verde-oscuro);
+  color: #fff;
+  border-color: var(--verde-oscuro);
+}
+
+.estado {
+  font-size: 0.85rem;
+  color: #999;
+  padding: 1rem 0;
+}
+
+.vacio {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  border: 1px dashed #d8d5cd;
+  border-radius: 12px;
+  color: #888;
+}
+.vacio p {
+  font-size: 0.88rem;
+  margin: 0 0 1rem;
+}
+
+.lista-bloques {
+  margin-bottom: 0.5rem;
+}
+
+.btn-anadir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px dashed #d8d5cd;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 0.85rem;
+  color: #666;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 0.35rem;
+}
+.btn-anadir:hover {
+  background: #f2f0ea;
+  color: #1a1a1a;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--verde-oscuro);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  z-index: 2000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}

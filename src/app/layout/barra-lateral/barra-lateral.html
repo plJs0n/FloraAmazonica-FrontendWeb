@@ -6,13 +6,13 @@
   <nav class="barra-lateral-nav">
     @for (elemento of elementosNav; track elemento.etiqueta) {
       @if (elemento.ruta) {
-        <a
+        <button
           class="barra-lateral-enlace"
           [routerLink]="elemento.ruta"
           routerLinkActive="barra-lateral-enlace-activo"
         >
           {{ elemento.etiqueta }}
-        </a>
+        </button>
       } @else {
         <div class="grupo-nav" [class.grupo-fijado]="grupoEstaFijado(elemento.etiqueta)">
           <button
@@ -26,13 +26,14 @@
 
           <div class="submenu">
             @for (subElemento of elemento.subElementos; track subElemento.ruta) {
-              <a
+              <button
                 class="barra-lateral-enlace barra-lateral-subenlace"
                 [routerLink]="subElemento.ruta"
                 routerLinkActive="barra-lateral-enlace-activo"
+                (click)="cerrarGrupo()"
               >
                 {{ subElemento.etiqueta }}
-              </a>
+              </button>
             }
           </div>
         </div>

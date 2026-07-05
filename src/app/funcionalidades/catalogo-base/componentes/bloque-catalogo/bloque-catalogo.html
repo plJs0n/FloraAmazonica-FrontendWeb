@@ -1,0 +1,71 @@
+<!-- funcionalidades/catalogo-base/componentes/bloque-catalogo/bloque-catalogo.html -->
+
+<div class="bloque-catalogo">
+
+  <div class="bloque-cabecera">
+    <div class="icono-fijo" aria-hidden="true">⊞</div>
+
+    <div class="bloque-info">
+      <div class="fila-titulo">
+        <p class="bloque-titulo">{{ config.etiquetaFamilia }} / {{ config.etiquetaEspecie }}</p>
+        <span class="badge-fijo">Campo fijo</span>
+      </div>
+      <p class="bloque-seccion">{{ config.seccion }}</p>
+    </div>
+
+    <div class="bloque-acciones">
+      <button class="btn-icono" type="button" title="Editar nombres" (click)="abrirEdicion()">✎</button>
+    </div>
+  </div>
+
+  <!-- Vista previa: como lo verá el registrador, bloqueado -->
+  <div class="bloque-datos">
+    <div class="campo-vista">
+      <label class="campo-label-vista">{{ config.etiquetaFamilia }}</label>
+      <div class="input-simulado">
+        <span class="input-placeholder">Ingresar familia...</span>
+      </div>
+    </div>
+    <div class="campo-vista">
+      <label class="campo-label-vista">{{ config.etiquetaEspecie }}</label>
+      <div class="input-simulado">
+        <span class="input-placeholder">Ingresar nombre científico...</span>
+      </div>
+    </div>
+    <a class="link-catalogo" routerLink="/catalogo/familias-especies">
+      Administrar familias y especies →
+    </a>
+  </div>
+
+  <!-- Panel de edición inline -->
+  @if (editando()) {
+    <div class="panel-edicion">
+      <p class="panel-titulo">Editar nombres del campo</p>
+      <p class="panel-aviso">Los datos provienen del catálogo de especies y no son editables aquí.</p>
+
+      <div class="grupo">
+        <label class="etiqueta" for="bc-seccion">Sección</label>
+        <input id="bc-seccion" class="entrada" type="text" [(ngModel)]="borrador.seccion"
+               placeholder="Ej: Identificación" />
+      </div>
+      <div class="fila-doble">
+        <div class="grupo">
+          <label class="etiqueta" for="bc-familia">Etiqueta — Familia</label>
+          <input id="bc-familia" class="entrada" type="text" [(ngModel)]="borrador.etiquetaFamilia"
+                 placeholder="Ej: Familia botánica" />
+        </div>
+        <div class="grupo">
+          <label class="etiqueta" for="bc-especie">Etiqueta — Especie</label>
+          <input id="bc-especie" class="entrada" type="text" [(ngModel)]="borrador.etiquetaEspecie"
+                 placeholder="Ej: Nombre científico" />
+        </div>
+      </div>
+
+      <div class="panel-pie">
+        <button type="button" class="btn-secundario" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn-primario" (click)="confirmar()">Guardar</button>
+      </div>
+    </div>
+  }
+
+</div>

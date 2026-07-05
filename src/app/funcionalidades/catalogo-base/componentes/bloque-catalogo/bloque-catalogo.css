@@ -1,0 +1,231 @@
+/* funcionalidades/catalogo-base/componentes/bloque-catalogo/bloque-catalogo.css */
+
+.bloque-catalogo {
+  background: #fff;
+  border: 1px solid #e5e2db;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.bloque-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.icono-fijo {
+  color: #b5b2a9;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.bloque-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fila-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bloque-titulo {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.badge-fijo {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #f2f0ea;
+  color: #888;
+  border: 1px solid #e5e2db;
+}
+
+.bloque-seccion {
+  font-size: 0.75rem;
+  color: #999;
+  margin: 0.2rem 0 0;
+}
+
+.bloque-acciones {
+  flex-shrink: 0;
+}
+
+.btn-icono {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e2db;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-icono:hover {
+  background: #f2f0ea;
+  border-color: #d8d5cd;
+  color: #1a1a1a;
+}
+
+/* Área de datos (solo lectura) */
+.bloque-datos {
+  border-top: 1px solid #eceae4;
+  padding: 0.75rem 0.9rem 0.85rem 2.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.campo-vista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.campo-label-vista {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.input-simulado {
+  display: flex;
+  align-items: center;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #e0ddd5;
+  border-radius: 8px;
+  background: #f7f6f2;
+  cursor: not-allowed;
+  max-width: 320px;
+}
+
+.input-placeholder {
+  font-size: 0.83rem;
+  color: #c0bdb5;
+  font-style: italic;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.link-catalogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--verde-oscuro);
+  text-decoration: none;
+}
+.link-catalogo:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* Panel de edición inline */
+.panel-edicion {
+  border-top: 1px solid #eceae4;
+  padding: 1rem 0.9rem 0.9rem;
+  background: #fafaf7;
+}
+
+.panel-titulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.25rem;
+}
+
+.panel-aviso {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0 0 0.9rem;
+  padding: 0.45rem 0.7rem;
+  background: var(--verde-claro);
+  border-radius: 7px;
+  border-left: 3px solid var(--verde-oscuro);
+}
+
+.grupo {
+  margin-bottom: 0.75rem;
+}
+
+.etiqueta {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+.entrada {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #d8d5cd;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: #1a1a1a;
+  background: #fff;
+}
+.entrada:focus {
+  outline: none;
+  border-color: var(--verde-oscuro);
+}
+
+.fila-doble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.panel-pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.btn-secundario {
+  padding: 0.45rem 1rem;
+  border: 1px solid #d8d5cd;
+  border-radius: 8px;
+  background: transparent;
+  color: #333;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-secundario:hover {
+  background: #f2f0ea;
+}
+
+.btn-primario {
+  padding: 0.45rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--verde-oscuro);
+  color: #fff;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-primario:hover {
+  background: var(--verde-hover);
+}

@@ -1,1 +1,82 @@
-<p>formulario works!</p>
+<!-- funcionalidades/catalogo-base/paginas/formulario/formulario.html -->
+
+<div class="pagina">
+
+  <div class="cabecera-pagina">
+    <div>
+      <h1>Formulario de registro</h1>
+      <p class="subtitulo">Configura los campos morfológicos que verá el registrador según el hábito.</p>
+    </div>
+    <button class="btn-nuevo" type="button" (click)="abrirNuevo()">+ Nuevo campo</button>
+  </div>
+
+  <!-- Selector de hábito -->
+  <p class="etiqueta-seccion">Hábito</p>
+  <div class="pills-habito">
+    @for (habito of habitos; track habito) {
+      <button type="button" class="pill" [class.activa]="habitoActual === habito"
+              (click)="cambiarHabito(habito)">
+        {{ habito }}
+      </button>
+    }
+  </div>
+
+  <p class="etiqueta-seccion">
+    Campos morfológicos — <span class="habito-nombre">{{ habitoActual }}</span>
+  </p>
+
+  <!-- Bloque fijo de catálogo (siempre primero, no arrastrable) -->
+  <app-bloque-catalogo
+    [config]="configCatalogo"
+    (guardar)="onGuardarConfigCatalogo($event)">
+  </app-bloque-catalogo>
+
+  @if (cargando) {
+    <p class="estado">Cargando…</p>
+  }
+
+  @if (!cargando && campos.length === 0) {
+    <div class="vacio">
+      <p>Este hábito aún no tiene campos morfológicos configurados.</p>
+      <button class="btn-nuevo" type="button" (click)="abrirNuevo()">+ Crear el primer campo</button>
+    </div>
+  }
+
+  <!-- Bloques arrastrables -->
+  <div class="lista-bloques">
+    @for (campo of campos; track campo.clave; let i = $index) {
+      <div draggable="true"
+           (dragstart)="onArrastrarInicio(i)"
+           (dragover)="onArrastrarSobre($event)"
+           (drop)="onSoltar(i)">
+        <app-bloque-campo
+          [campo]="campo"
+          (editarCampo)="abrirEdicion($event)"
+          (alternarCampo)="alternarCampo($event)"
+          (agregarOpcion)="agregarOpcion($event)"
+          (editarOpcion)="editarOpcion($event)"
+          (alternarOpcion)="alternarOpcion($event)">
+        </app-bloque-campo>
+      </div>
+    }
+  </div>
+
+  @if (!cargando && campos.length > 0) {
+    <button class="btn-anadir" type="button" (click)="abrirNuevo()">+ Añadir campo</button>
+  }
+
+</div>
+
+@if (modalAbierto) {
+  <app-modal-campo
+    [campo]="campoEnEdicion"
+    [habitoActual]="habitoActual"
+    [habitosGemelos]="habitosGemelos"
+    (confirmar)="onConfirmarModal($event)"
+    (cerrar)="cerrarModal()">
+  </app-modal-campo>
+}
+
+@if (mensaje) {
+  <div class="toast">{{ mensaje }}</div>
+}

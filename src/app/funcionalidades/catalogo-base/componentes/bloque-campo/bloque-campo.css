@@ -1,0 +1,174 @@
+/* funcionalidades/catalogo-base/componentes/bloque-campo/bloque-campo.css */
+
+.bloque {
+  background: #fff;
+  border: 1px solid #e5e2db;
+  border-radius: 12px;
+  margin-bottom: 0.65rem;
+  overflow: hidden;
+  transition: border-color 0.15s, opacity 0.15s;
+}
+.bloque.inactivo {
+  opacity: 0.55;
+}
+
+.bloque-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.asa-arrastre {
+  color: #b5b2a9;
+  cursor: grab;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.asa-arrastre:active {
+  cursor: grabbing;
+}
+
+.bloque-info {
+  flex: 1;
+  min-width: 0;
+}
+.bloque-titulo {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+.bloque-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+.seccion {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.badge-obligatorio {
+  background: var(--verde-claro);
+  color: var(--verde-oscuro);
+}
+.badge-multiple {
+  background: #e6f1fb;
+  color: #185fa5;
+}
+.badge-neutro {
+  background: #f2f0ea;
+  color: #888;
+  border: 1px solid #e5e2db;
+}
+
+.bloque-acciones {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.btn-icono {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e2db;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-icono:hover {
+  background: #f2f0ea;
+  border-color: #d8d5cd;
+  color: #1a1a1a;
+}
+
+.bloque-opciones {
+  border-top: 1px solid #eceae4;
+  padding: 0.65rem 0.9rem 0.75rem 2.55rem;
+}
+
+.fila-opcion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+}
+.fila-opcion:hover .acciones-opcion {
+  opacity: 1;
+}
+.opcion-inactiva .texto-opcion {
+  text-decoration: line-through;
+  color: #b5b2a9;
+}
+
+.marca {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.5px solid #b5b2a9;
+  flex-shrink: 0;
+}
+.marca-multiple {
+  border-radius: 3px;
+}
+
+.texto-opcion {
+  font-size: 0.83rem;
+  color: #555;
+  flex: 1;
+}
+
+.acciones-opcion {
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.btn-mini {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #999;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-mini:hover {
+  background: #f2f0ea;
+  color: #1a1a1a;
+}
+
+.btn-agregar-opcion {
+  border: none;
+  background: transparent;
+  color: var(--verde-oscuro);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  margin-top: 0.2rem;
+  font-family: inherit;
+}
+.btn-agregar-opcion:hover {
+  opacity: 0.75;
+}

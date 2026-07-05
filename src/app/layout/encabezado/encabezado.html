@@ -3,7 +3,7 @@
 
   @if (usuario) {
     <div class="encabezado-usuario">
-      <span class="encabezado-nombre">{{ usuario.first_name }} {{ usuario.paternal_last_name }}</span>
+      <span class="encabezado-nombre encabezado-nombre-oculto">{{ usuario.first_name }} {{ usuario.paternal_last_name }}</span>
       <span class="encabezado-rol">{{ usuario.role }}</span>
       <button class="encabezado-logout" (click)="cerrarSesion()">Cerrar sesión</button>
     </div>

@@ -1,0 +1,198 @@
+<!-- funcionalidades/catalogo-base/componentes/modal-campo/modal-campo.html -->
+
+<div class="fondo-modal" (click)="onCerrar()">
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <div class="cabecera">
+      <h2>{{ esEdicion ? 'Editar campo' : 'Nuevo campo' }}</h2>
+
+      <button
+        class="btn-icono"
+        type="button"
+        (click)="onCerrar()"
+        aria-label="Cerrar"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="cuerpo">
+
+      <!-- Aviso de campo compartido -->
+      @if (esEdicion && tieneGemelos) {
+        <div class="aviso-gemelos">
+          <p class="aviso-titulo">
+            Este campo también existe en: {{ habitosGemelos.join(', ') }}
+          </p>
+
+          <label class="opcion-radio">
+            <input
+              type="radio"
+              name="aplicar"
+              [value]="false"
+              [(ngModel)]="aplicarEnOtros"
+            />
+            <span>Aplicar cambios solo en {{ habitoActual }}</span>
+          </label>
+
+          <label class="opcion-radio">
+            <input
+              type="radio"
+              name="aplicar"
+              [value]="true"
+              [(ngModel)]="aplicarEnOtros"
+            />
+            <span>Aplicar en {{ habitoActual }} y {{ habitosGemelos.join(', ') }}</span>
+          </label>
+        </div>
+      }
+
+      <div class="grupo-campo">
+        <label class="etiqueta" for="section">Sección</label>
+
+        <input
+          id="section"
+          class="entrada"
+          type="text"
+          [(ngModel)]="section"
+          placeholder="Ej: Datos dasométricos"
+        />
+      </div>
+
+      <div class="grupo-campo">
+        <label class="etiqueta" for="field">Nombre del campo</label>
+
+        <input
+          id="field"
+          class="entrada"
+          type="text"
+          [(ngModel)]="field_name"
+          placeholder="Ej: Raíces visibles"
+        />
+      </div>
+
+      <div class="fila-doble">
+        <div class="grupo-campo">
+          <label class="etiqueta">Tipo de selección</label>
+
+          <div class="selector-tipo">
+            <button
+              type="button"
+              class="tipo-opcion"
+              [class.activo]="selection_type === 'single'"
+              (click)="selection_type = 'single'"
+            >
+              Única
+            </button>
+
+            <button
+              type="button"
+              class="tipo-opcion"
+              [class.activo]="selection_type === 'multiple'"
+              (click)="selection_type = 'multiple'"
+            >
+              Múltiple
+            </button>
+          </div>
+        </div>
+
+        <div class="grupo-campo">
+          <label class="etiqueta" for="is_required">Obligatorio</label>
+
+          <div class="fila-toggle">
+            <input
+              id="is_required"
+              type="checkbox"
+              class="toggle"
+              [(ngModel)]="is_required"
+              aria-label="Campo obligatorio"
+            />
+
+            <span class="texto-toggle">
+              {{ is_required ? 'Sí' : 'No' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Opciones: solo al crear. Al editar, las opciones se gestionan en el bloque. -->
+      @if (!esEdicion) {
+        <div class="grupo-campo">
+          <label class="etiqueta">Opciones de respuesta</label>
+
+          <div class="lista-chips">
+            @for (opcion of opciones; track opcion; let i = $index) {
+              <span class="chip">
+                {{ opcion }}
+
+                <button
+                  type="button"
+                  class="chip-x"
+                  (click)="quitarOpcion(i)"
+                  aria-label="Quitar opción"
+                >
+                  ✕
+                </button>
+              </span>
+            }
+          </div>
+
+          <div class="fila-agregar">
+            <input
+              class="entrada-chip"
+              type="text"
+              [(ngModel)]="nuevaOpcion"
+              placeholder="Escribir opción..."
+              (keydown.enter)="agregarOpcion()"
+            />
+
+            <button
+              type="button"
+              class="btn-agregar"
+              (click)="agregarOpcion()"
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="grupo-campo">
+          <label class="etiqueta">¿En qué hábitos aplica este campo?</label>
+
+          <div class="lista-habitos">
+            @for (habito of habitos; track habito) {
+              <label class="habito-check">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="habitosSeleccionados[habito]"
+                />
+                <span>{{ habito }}</span>
+              </label>
+            }
+          </div>
+        </div>
+      }
+
+    </div>
+
+    <div class="pie">
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="onCerrar()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="btn-primario"
+        [disabled]="!puedeConfirmar()"
+        (click)="onConfirmar()"
+      >
+        {{ esEdicion ? 'Guardar cambios' : 'Crear campo' }}
+      </button>
+    </div>
+
+  </div>
+</div>

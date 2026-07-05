@@ -9,6 +9,7 @@ import { UsuarioAdmin, RolUsuario } from '../../modelos/usuario-admin.modelo';
 })
 export class TarjetaUsuario {
   @Input({ required: true }) usuario!: UsuarioAdmin;
+  @Input() esMiCuenta = false;
 
   @Output() cambiarEstado = new EventEmitter<UsuarioAdmin>();
   @Output() cambiarRol = new EventEmitter<{ usuario: UsuarioAdmin; rol: RolUsuario }>();
@@ -16,6 +17,7 @@ export class TarjetaUsuario {
   readonly rolesDisponibles: RolUsuario[] = ['administrador', 'registrador', 'validador', 'consultor'];
 
   alCambiarEstado(): void {
+    if (this.esMiCuenta) return;
     this.cambiarEstado.emit(this.usuario);
   }
 
