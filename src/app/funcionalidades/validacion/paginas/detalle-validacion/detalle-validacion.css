@@ -1,0 +1,270 @@
+.ficha-contenedor {
+  padding: 24px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.pill-familia
+.pill-habito {
+  text-transform: capitalize;
+  color: #6b7a70;
+  background-color:var(--verde-claro);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.ficha-estado {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  padding: 60px 20px;
+}
+
+.ficha-estado.error {
+  color: #ef4444;
+}
+
+/* ── HEADER ── */
+.ficha-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.tracking-code {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.nombre-cientifico {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  color: #111827;
+  margin: 0 0 6px;
+}
+
+.header-meta {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.separador {
+  margin: 0 6px;
+}
+
+.btn-cambiar-estado {
+  background: var(--verde-oscuro);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.btn-cambiar-estado:hover {
+  background: var(--verde-hover);
+}
+
+/* ── SECCIONES ── */
+.seccion {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.seccion-titulo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--verde-oscuro);
+  margin: 0 0 16px;
+}
+
+/* ── ESTADO ACTUAL ── */
+.estado-actual {
+  font-size: 0.875rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.estado-en_revision {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.estado-observado {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.estado-validado {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.estado-rechazado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.observacion-nota {
+  font-size: 0.875rem;
+  color: #374151;
+  background: #f9fafb;
+  border-left: 3px solid #d1d5db;
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+}
+
+.observacion-label {
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+/* ── FOTOGRAFÍAS ── */
+.foto-principal-contenedor {
+  width: 100%;
+  background: #f3f4f6;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.foto-principal {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+.fotos-miniaturas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.miniatura {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.miniatura.activa {
+  border-color: var(--verde-oscuro);
+}
+
+.miniatura img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+}
+
+.miniatura-label {
+  font-size: 0.65rem;
+  color: #6b7280;
+  padding-bottom: 4px;
+}
+
+/* ── DATOS GRID ── */
+.datos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dato-ancho {
+  grid-column: 1 / -1;
+}
+
+.dato-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #9ca3af;
+}
+
+.dato-valor {
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+/* ── MORFOLOGÍA ── */
+.morfologia-seccion {
+  margin-bottom: 20px;
+}
+
+.morfologia-seccion:last-child {
+  margin-bottom: 0;
+}
+
+.morfologia-seccion-titulo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* ── UBICACIÓN ── */
+.coordenadas {
+  display: flex;
+  gap: 16px;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.mapa-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 200px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  color: #9ca3af;
+  border: 1px dashed #d1d5db;
+}
+
+.mapa-placeholder p {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.mapa-placeholder small {
+  font-size: 0.75rem;
+}

@@ -1,0 +1,79 @@
+<div class="panel-validacion">
+  <!-- COLUMNA IZQUIERDA: lista -->
+  <aside class="columna-lista">
+    <div class="lista-header">
+      <h2>Registros pendientes</h2>
+      <span class="total-badge">{{ totalRegistros() }}</span>
+    </div>
+
+    <!-- Filtros por estado -->
+    <div class="filtros">
+      <button
+        class="filtro-btn"
+        [class.activo]="filtroEstado() === undefined"
+        (click)="aplicarFiltro(undefined)">
+        Todos
+      </button>
+      @for (estado of estados; track estado.valor) {
+        <button
+          class="filtro-btn"
+          [class.activo]="filtroEstado() === estado.valor"
+          (click)="aplicarFiltro(estado.valor)">
+          {{ estado.etiqueta }}
+        </button>
+      }
+    </div>
+
+    <!-- Lista -->
+    <div class="lista-contenido">
+      @if (cargando()) {
+        <div class="estado-mensaje">Cargando registros...</div>
+      } @else if (error()) {
+        <div class="estado-mensaje error">{{ error() }}</div>
+      } @else if (registros().length === 0) {
+        <div class="estado-mensaje">No hay registros para mostrar.</div>
+      } @else {
+        @for (registro of registros(); track registro.id) {
+          <div
+            class="tarjeta-registro"
+            [class.seleccionada]="registroSeleccionado() === registro.id"
+            (click)="seleccionar(registro.id)">
+            <div class="tarjeta-header">
+              <span class="codigo">{{ registro.tracking_code }}</span>
+              <span class="estado-pill {{ getClaseEstado(registro.status) }}">
+                {{ getEtiquetaEstado(registro.status) }}
+              </span>
+            </div>
+            <div class="nombre-cientifico">{{ registro.scientific_name }}</div>
+            <div class="tarjeta-meta">
+              <span>{{ registro.habit }}</span>
+              <span>{{ registro.registrar.first_name }} {{ registro.registrar.paternal_last_name }}</span>
+            </div>
+            <div class="fecha">
+              {{ registro.submitted_at | date:'dd/MM/yyyy' }}
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </aside>
+
+  <!-- COLUMNA DERECHA: ficha -->
+  <main class="columna-ficha">
+    @if (registroSeleccionado()) {
+      <app-detalle-validacion
+        [registroId]="registroSeleccionado()!"
+        (estadoActualizado)="onEstadoActualizado()">
+      </app-detalle-validacion>
+    } @else {
+      <div class="ficha-vacia">
+        <div class="ficha-vacia-icono">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <p>Selecciona un registro de la lista para revisar su ficha completa.</p>
+      </div>
+    }
+  </main>
+</div>

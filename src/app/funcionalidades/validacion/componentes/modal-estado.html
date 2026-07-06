@@ -1,0 +1,71 @@
+<div class="modal-overlay" (click)="cerrar.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Cambiar estado del registro</h2>
+      <button class="btn-cerrar" (click)="cerrar.emit()" aria-label="Cerrar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-instruccion">Selecciona el nuevo estado para este registro:</p>
+
+      <div class="opciones">
+        @for (opcion of opciones; track opcion.valor) {
+          <button
+            class="opcion"
+            [class.seleccionada]="estadoSeleccionado() === opcion.valor"
+            [class.actual]="estadoActual === opcion.valor"
+            [class.opcion-en_revision]="opcion.valor === 'en_revision'"
+            [class.opcion-observado]="opcion.valor === 'observado'"
+            [class.opcion-validado]="opcion.valor === 'validado'"
+            [class.opcion-rechazado]="opcion.valor === 'rechazado'"
+            (click)="seleccionar(opcion.valor)">
+            <div class="opcion-header">
+              <span class="opcion-etiqueta">{{ opcion.etiqueta }}</span>
+              @if (estadoActual === opcion.valor) {
+                <span class="badge-actual">actual</span>
+              }
+            </div>
+            <span class="opcion-descripcion">{{ opcion.descripcion }}</span>
+          </button>
+        }
+      </div>
+
+      @if (requiereNota()) {
+        <div class="nota-contenedor">
+          <label class="nota-label">
+            Motivo <span class="obligatorio">*</span>
+          </label>
+          <textarea
+            class="nota-textarea"
+            placeholder="Describe el motivo de la observación o rechazo..."
+            rows="4"
+            [value]="observacionNota()"
+            (input)="observacionNota.set($any($event.target).value)">
+          </textarea>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="error-mensaje">{{ error() }}</div>
+      }
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrar.emit()">Cancelar</button>
+      <button
+        class="btn-guardar"
+        [disabled]="!puedeGuardar() || guardando()"
+        (click)="guardar()">
+        @if (guardando()) {
+          Guardando...
+        } @else {
+          Confirmar cambio
+        }
+      </button>
+    </div>
+  </div>
+</div>

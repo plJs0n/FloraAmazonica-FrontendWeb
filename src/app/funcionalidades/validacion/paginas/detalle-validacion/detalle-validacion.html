@@ -1,0 +1,220 @@
+<div class="ficha-contenedor">
+  @if (cargando()) {
+    <div class="ficha-estado">Cargando ficha...</div>
+  } @else if (error()) {
+    <div class="ficha-estado error">{{ error() }}</div>
+  } @else if (ficha()) {
+    <!-- HEADER -->
+    <div class="ficha-header">
+      <div class="ficha-header-info">
+        <span class="tracking-code">{{ ficha()!.tracking_code }}</span>
+        <h1 class="nombre-cientifico">{{ ficha()!.scientific_name }}</h1>
+        <div class="header-meta">
+          <span class="pill-familia">{{ficha()!.family}}</span>
+          <span class="pill-habito">{{ getEtiquetaHabito(ficha()!.habit) }}</span>
+        </div>
+      </div>
+      <button class="btn-cambiar-estado" (click)="abrirModal()">
+        Cambiar estado
+      </button>
+    </div>
+
+    <!-- ESTADO ACTUAL -->
+    <div class="seccion">
+      <div class="estado-actual estado-{{ ficha()!.status }}">
+        Estado actual:
+        <strong>
+          @switch (ficha()!.status) {
+            @case ('en_revision') { En revisión }
+            @case ('observado') { Observado }
+            @case ('validado') { Validado }
+            @case ('rechazado') { Rechazado }
+          }
+        </strong>
+      </div>
+      @if (ficha()!.observation_notes) {
+        <div class="observacion-nota">
+          <span class="observacion-label">Observación:</span>
+          {{ ficha()!.observation_notes }}
+        </div>
+      }
+    </div>
+
+    <!-- FOTOGRAFÍAS -->
+    @if (ficha()!.photos && ficha()!.photos.length) {
+      <div class="seccion">
+        <h3 class="seccion-titulo">Fotografías</h3>
+        <div class="foto-principal-contenedor">
+          <img [src]="fotoActiva()" class="foto-principal" alt="Fotografía principal" />
+        </div>
+        <div class="fotos-miniaturas">
+          @for (foto of ficha()!.photos; track foto.id) {
+            <div
+              class="miniatura"
+              [class.activa]="fotoActiva() === foto.cloudinary_url"
+              (click)="seleccionarFoto(foto.cloudinary_url)">
+              <img [src]="foto.cloudinary_url" [alt]="getEtiquetaFoto(foto.photo_type)" aria-label="foto de registro"/>
+              <span class="miniatura-label">{{ getEtiquetaFoto(foto.photo_type) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- DATOS DE IDENTIFICACIÓN -->
+    <div class="seccion">
+      <h3 class="seccion-titulo">Identificación</h3>
+      <div class="datos-grid">
+        <div class="dato">
+          <span class="dato-label">Nombre científico</span>
+          <span class="dato-valor">{{ ficha()!.scientific_name }}</span>
+        </div>
+        <div class="dato">
+          <span class="dato-label">Familia</span>
+          <span class="dato-valor">{{ ficha()!.family }}</span>
+        </div>
+        <div class="dato">
+          <span class="dato-label">Hábito</span>
+          <span class="dato-valor">{{ getEtiquetaHabito(ficha()!.habit) }}</span>
+        </div>
+        @if (ficha()!.country_distribution && ficha()!.country_distribution.length) {
+          <div class="dato dato-ancho">
+            <span class="dato-label">Distribución</span>
+            <span class="dato-valor">{{ ficha()!.country_distribution.join(', ') }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- DATOS DASOMÉTRICOS -->
+    @if (ficha()!.height || ficha()!.cap || ficha()!.dap || ficha()!.crown_diameter) {
+      <div class="seccion">
+        <h3 class="seccion-titulo">Datos dasométricos</h3>
+        <div class="datos-grid">
+          @if (ficha()!.height) {
+            <div class="dato">
+              <span class="dato-label">Altura total</span>
+              <span class="dato-valor">{{ ficha()!.height }} m</span>
+            </div>
+          }
+          @if (ficha()!.cap) {
+            <div class="dato">
+              <span class="dato-label">CAP</span>
+              <span class="dato-valor">{{ ficha()!.cap }} cm</span>
+            </div>
+          }
+          @if (ficha()!.dap) {
+            <div class="dato">
+              <span class="dato-label">DAP</span>
+              <span class="dato-valor">{{ ficha()!.dap }} cm</span>
+            </div>
+          }
+          @if (ficha()!.crown_diameter) {
+            <div class="dato">
+              <span class="dato-label">Diámetro de copa</span>
+              <span class="dato-valor">{{ ficha()!.crown_diameter }} m</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- DATOS MORFOLÓGICOS DINÁMICOS -->
+    @if (getMorfologiaEntradas().length) {
+      <div class="seccion">
+        <h3 class="seccion-titulo">Características morfológicas</h3>
+        @for (seccion of getMorfologiaEntradas(); track seccion.seccion) {
+          <div class="morfologia-seccion">
+            <h4 class="morfologia-seccion-titulo">{{ seccion.seccion }}</h4>
+            <div class="datos-grid">
+              @for (item of seccion.campos; track item.campo) {
+                <div class="dato">
+                  <span class="dato-label">{{ item.campo }}</span>
+                  <span class="dato-valor">{{ formatearValor(item.valor) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- UBICACIÓN -->
+    @if (ficha()!.latitude && ficha()!.longitude) {
+      <div class="seccion">
+        <h3 class="seccion-titulo">Ubicación</h3>
+        <div class="coordenadas">
+          <span>Lat: {{ ficha()!.latitude }}</span>
+          <span>Lng: {{ ficha()!.longitude }}</span>
+        </div>
+        <div class="mapa-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <p>Lat: {{ ficha()!.latitude }}, Lng: {{ ficha()!.longitude }}</p>
+          <small>Integración de mapa pendiente</small>
+        </div>
+      </div>
+    }
+
+    <!-- REGISTRADOR -->
+    <div class="seccion">
+      <h3 class="seccion-titulo">Registrador</h3>
+      <div class="datos-grid">
+        <div class="dato">
+          <span class="dato-label">Nombre</span>
+          <span class="dato-valor">
+            {{ ficha()!.registrar.first_name }}
+            {{ ficha()!.registrar.paternal_last_name }}
+            {{ ficha()!.registrar.maternal_last_name }}
+          </span>
+        </div>
+        <div class="dato">
+          <span class="dato-label">Correo</span>
+          <span class="dato-valor">{{ ficha()!.registrar.email }}</span>
+        </div>
+        <div class="dato">
+          <span class="dato-label">Enviado el</span>
+          <span class="dato-valor">{{ ficha()!.submitted_at | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALIDADOR -->
+    @if (ficha()!.validator) {
+      <div class="seccion">
+        <h3 class="seccion-titulo">Validador</h3>
+        <div class="datos-grid">
+          <div class="dato">
+            <span class="dato-label">Nombre</span>
+            <span class="dato-valor">
+              {{ ficha()!.validator!.first_name }}
+              {{ ficha()!.validator!.paternal_last_name }}
+            </span>
+          </div>
+          <div class="dato">
+            <span class="dato-label">Correo</span>
+            <span class="dato-valor">{{ ficha()!.validator!.email }}</span>
+          </div>
+          @if (ficha()!.validated_at) {
+            <div class="dato">
+              <span class="dato-label">Validado el</span>
+              <span class="dato-valor">{{ ficha()!.validated_at | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <!-- MODAL -->
+  @if (modalAbierto() && ficha()) {
+    <app-modal-estado
+      [registroId]="ficha()!.id"
+      [estadoActual]="ficha()!.status"
+      (cerrar)="cerrarModal()"
+      (estadoCambiado)="onEstadoCambiado()">
+    </app-modal-estado>
+  }
+</div>
