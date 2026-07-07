@@ -1,9 +1,9 @@
 export type TipoSeleccion = 'single' | 'multiple';
 export type TipoCampo = 'option' | 'number';
 
-export type Habito = 'árbol' | 'palmera' | 'arbusto' | 'liana' | 'hierba';
+export type Habito = 'arbol' | 'palmera' | 'arbusto' | 'liana' | 'hierba';
 
-export const HABITOS: Habito[] = ['árbol', 'palmera', 'arbusto', 'liana', 'hierba'];
+export const HABITOS: Habito[] = ['arbol', 'palmera', 'arbusto', 'liana', 'hierba'];
 
 export interface ValorMorfologico {
   id: string;
