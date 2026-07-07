@@ -1,0 +1,100 @@
+<div class="overlay" (click)="onOverlayClick($event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Editar {{ campo.etiqueta }}</h3>
+
+      <button
+        class="btn-cerrar"
+        type="button"
+        (click)="cerrar.emit()"
+        aria-label="Cerrar modal"
+        title="Cerrar modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p class="advertencia">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+
+        Este cambio se reflejará en tu perfil del sistema.
+      </p>
+
+      <div class="campo-grupo">
+        <label for="campo-edicion-perfil">
+          {{ campo.etiqueta }}
+
+          @if (campo.opcional) {
+            <span class="opcional">(opcional)</span>
+          }
+        </label>
+
+        <input
+          id="campo-edicion-perfil"
+          name="campo-edicion-perfil"
+          [type]="campo.tipo ?? 'text'"
+          [ngModel]="nuevoValor()"
+          (ngModelChange)="nuevoValor.set($event)"
+          [attr.placeholder]="'Ingresa ' + campo.etiqueta.toLowerCase()"
+          [attr.title]="campo.etiqueta"
+          [attr.aria-label]="campo.etiqueta"
+          autocomplete="off"
+        />
+
+        @if (error()) {
+          <span class="error-msg">
+            {{ error() }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn-cancelar"
+        type="button"
+        (click)="cerrar.emit()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="btn-confirmar"
+        type="button"
+        (click)="onConfirmar()"
+      >
+        Guardar cambio
+      </button>
+    </div>
+  </div>
+</div>
