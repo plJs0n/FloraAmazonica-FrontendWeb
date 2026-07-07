@@ -1,23 +1,24 @@
 import { Component, OnInit, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ConsultaService } from '../../servicios/consulta.service';
 import {
   FiltroMorfologico,
   EspecieRegistro,
   ResultadoBusqueda,
-  FiltroSeleccionado,
 } from '../../modelos/consulta.models';
 
 type Paso = 'habito' | 'filtros' | 'resultados';
 
 const HABITOS = [
-  { valor: 'arbol',    etiqueta: 'Árbol' },
-  { valor: 'palmera',  etiqueta: 'Palmera' },
-  { valor: 'arbusto',  etiqueta: 'Arbusto' },
-  { valor: 'liana',    etiqueta: 'Liana' },
-  { valor: 'hierba',   etiqueta: 'Hierba' },
-  { valor: '',         etiqueta: 'No estoy seguro' },
+  { valor: 'arbol',   etiqueta: 'Árbol' },
+  { valor: 'palmera', etiqueta: 'Palmera' },
+  { valor: 'arbusto', etiqueta: 'Arbusto' },
+  { valor: 'liana',   etiqueta: 'Liana' },
+  { valor: 'hierba',  etiqueta: 'Hierba' },
+  { valor: '',        etiqueta: 'No estoy seguro' },
 ];
 
 @Component({
@@ -30,22 +31,33 @@ const HABITOS = [
 export class BuscadorMorfologico implements OnInit {
   readonly habitos = HABITOS;
 
+  // ── Paso actual ──────────────────────────────────────────────────────────
   paso = signal<Paso>('habito');
+
+  // ── Buscador por texto ───────────────────────────────────────────────────
+  textoBusqueda = signal('');
+  sugerencias = signal<string[]>([]);
+  mostrarSugerencias = signal(false);
+  q = signal('');
+  private sugerenciasSubject = new Subject<string>();
+
+  // ── Hábito y filtros ─────────────────────────────────────────────────────
   habitoSeleccionado = signal<string | null>(null);
   cargandoFiltros = signal(false);
   cargandoResultados = signal(false);
   error = signal('');
 
   filtros = signal<FiltroMorfologico[]>([]);
-  seleccionados = signal<Record<string, string>>({});  // field_name → valor elegido
+  seleccionados = signal<Record<string, string>>({});
   seccionesAbiertas = signal<Record<string, boolean>>({});
 
+  // ── Resultados ───────────────────────────────────────────────────────────
   resultados = signal<EspecieRegistro[]>([]);
   totalResultados = signal(0);
   paginaActual = signal(1);
   totalPaginas = signal(1);
 
-  // Agrupa filtros por sección para el acordeón
+  // ── Computed ─────────────────────────────────────────────────────────────
   readonly secciones = computed(() => {
     const mapa = new Map<string, FiltroMorfologico[]>();
     for (const f of this.filtros()) {
@@ -56,9 +68,16 @@ export class BuscadorMorfologico implements OnInit {
     return Array.from(mapa.entries()).map(([nombre, campos]) => ({ nombre, campos }));
   });
 
-  // Cuántos filtros tiene seleccionado el usuario
   readonly cantidadSeleccionados = computed(() =>
     Object.values(this.seleccionados()).filter(v => !!v).length
+  );
+
+  readonly resultadosExactos = computed(() =>
+    this.resultados().filter(e => this.scoreEspecie(e) === this.cantidadSeleccionados())
+  );
+
+  readonly resultadosSimilares = computed(() =>
+    this.resultados().filter(e => this.scoreEspecie(e) < this.cantidadSeleccionados())
   );
 
   constructor(
@@ -67,20 +86,68 @@ export class BuscadorMorfologico implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.sugerenciasSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(texto => {
+        if (texto.length < 2) {
+          this.sugerencias.set([]);
+          this.mostrarSugerencias.set(false);
+          return [];
+        }
+        return this.consulta.getSugerencias(texto);
+      })
+    ).subscribe({
+      next: (resultado) => {
+        this.sugerencias.set(resultado);
+        this.mostrarSugerencias.set(resultado.length > 0);
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
-  // ── Paso 1: elegir hábito ────────────────────────────────────────────────
+  // ── Autocomplete ─────────────────────────────────────────────────────────
+
+  onInputTexto(event: Event) {
+    const valor = (event.target as HTMLInputElement).value;
+    this.textoBusqueda.set(valor);
+    this.q.set('');
+    this.sugerenciasSubject.next(valor);
+  }
+
+  elegirSugerencia(sugerencia: string) {
+    this.textoBusqueda.set(sugerencia);
+    this.q.set(sugerencia);
+    this.sugerencias.set([]);
+    this.mostrarSugerencias.set(false);
+    this.buscarDirecto();
+  }
+
+  cerrarSugerencias() {
+    setTimeout(() => this.mostrarSugerencias.set(false), 150);
+  }
+
+  buscarDirecto() {
+    this.q.set(this.textoBusqueda());
+    this.habitoSeleccionado.set(null);
+    this.seleccionados.set({});
+    this.buscar();
+  }
+
+  // ── Paso 1: hábito ───────────────────────────────────────────────────────
 
   elegirHabito(valor: string) {
     this.habitoSeleccionado.set(valor);
     this.seleccionados.set({});
+    this.q.set('');
+    this.textoBusqueda.set('');
     this.cargandoFiltros.set(true);
     this.error.set('');
 
     this.consulta.getFiltros(valor || undefined).subscribe({
       next: (data) => {
         this.filtros.set(data);
-        // Abre la primera sección por defecto
         if (data.length > 0) {
           const primera = data[0].section || 'General';
           this.seccionesAbiertas.set({ [primera]: true });
@@ -90,14 +157,14 @@ export class BuscadorMorfologico implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.error.set('No se pudieron cargar los filtros. Intentá de nuevo.');
+        this.error.set('Error al buscar. Intenta de nuevo.');
         this.cargandoFiltros.set(false);
         this.cdr.detectChanges();
       },
     });
   }
 
-  // ── Paso 2: seleccionar filtros ──────────────────────────────────────────
+  // ── Paso 2: filtros ──────────────────────────────────────────────────────
 
   toggleSeccion(nombre: string) {
     const actual = this.seccionesAbiertas();
@@ -110,7 +177,6 @@ export class BuscadorMorfologico implements OnInit {
 
   toggleChip(fieldName: string, opcion: string) {
     const actual = { ...this.seleccionados() };
-    // Si ya estaba seleccionado, deselecciona; si no, selecciona
     actual[fieldName] = actual[fieldName] === opcion ? '' : opcion;
     this.seleccionados.set(actual);
   }
@@ -123,7 +189,6 @@ export class BuscadorMorfologico implements OnInit {
     this.cargandoResultados.set(true);
     this.error.set('');
 
-    // Convertir seleccionados a slugs para el backend
     const filtrosSlug: Record<string, string> = {};
     for (const [fieldName, valor] of Object.entries(this.seleccionados())) {
       if (valor) {
@@ -133,6 +198,7 @@ export class BuscadorMorfologico implements OnInit {
 
     this.consulta.buscar({
       habit: this.habitoSeleccionado() || undefined,
+      q: this.q() || undefined,
       filtros: filtrosSlug,
       page: pagina,
       limit: 20,
@@ -156,10 +222,6 @@ export class BuscadorMorfologico implements OnInit {
 
   // ── Paso 3: resultados ───────────────────────────────────────────────────
 
-  /**
-   * Calcula cuántos filtros aplicados coincide esta especie.
-   * Usado para separar "exactos" de "similares" en la galería.
-   */
   scoreEspecie(especie: EspecieRegistro): number {
     let score = 0;
     const data = especie.morphological_data ?? {};
@@ -174,14 +236,6 @@ export class BuscadorMorfologico implements OnInit {
     }
     return score;
   }
-
-  readonly resultadosExactos = computed(() =>
-    this.resultados().filter(e => this.scoreEspecie(e) === this.cantidadSeleccionados())
-  );
-
-  readonly resultadosSimilares = computed(() =>
-    this.resultados().filter(e => this.scoreEspecie(e) < this.cantidadSeleccionados())
-  );
 
   irAFicha(id: string) {
     this.router.navigate(['/ficha-tecnica', id]);

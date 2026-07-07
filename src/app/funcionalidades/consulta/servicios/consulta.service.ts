@@ -31,6 +31,7 @@ export class ConsultaService {
 
   buscar(opciones: {
     habit?: string;
+    q?: string;
     filtros?: Record<string, string>;
     page?: number;
     limit?: number;
@@ -41,6 +42,10 @@ export class ConsultaService {
 
     if (opciones.habit) {
       params = params.set('habit', opciones.habit);
+    }
+
+    if (opciones.q) {
+      params = params.set('q', opciones.q);
     }
 
     for (const [slug, valor] of Object.entries(opciones.filtros ?? {})) {
@@ -76,5 +81,10 @@ export class ConsultaService {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '_')
       .replace(/^_|_$/g, '');
+  }
+
+  getSugerencias(q: string): Observable<string[]> {
+    const params = new HttpParams().set('q', q);
+    return this.http.get<string[]>(`${this.base}/sugerencias`, { params });
   }
 }
