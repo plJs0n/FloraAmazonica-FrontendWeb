@@ -63,3 +63,24 @@ export interface ChangeStatusPayload {
   status: EstadoRegistro;
   observation_notes?: string;
 }
+
+/**
+ * Fila del catálogo morfológico (GET /morfologia?habit=X).
+ * Define, para un hábito, qué field_name pertenece a qué sección
+ * y en qué orden. Se usa para agrupar el morphological_data plano
+ * del registro por sección en el detalle de validación.
+ */
+export interface ValorMorfologico {
+  id: string;
+  habit: string;
+  section: string;
+  field_name: string;
+  option_value: string;
+  selection_type: 'single' | 'multiple';
+  field_type: 'option' | 'number';
+  is_required: boolean;
+  display_order: number;
+  is_active: boolean;
+  use_in_search: boolean;
+  created_at: string;
+}

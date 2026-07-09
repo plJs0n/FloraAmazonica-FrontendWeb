@@ -6,8 +6,8 @@
 
 /* ── COLUMNA IZQUIERDA ── */
 .columna-lista {
-  width: 340px;
-  min-width: 340px;
+  width: 360px;
+  min-width: 360px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e5e7eb;
@@ -15,27 +15,37 @@
 }
 
 .lista-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.lista-header-titulo {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
-  padding: 20px 20px 12px;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .lista-header h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: var(--verde-oscuro);
   margin: 0;
 }
 
-.total-badge {
-  background: var(--verde-claro);
-  color: var(--verde-oscuro);
-  font-size: 0.75rem;
+.pendientes-badge {
+  background: var(--verde-oscuro);
+  color: #fff;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 2px 8px;
+  padding: 4px 10px;
   border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pendientes-badge.sin-pendientes {
+  background: #e5e7eb;
+  color: #6b7280;
 }
 
 /* ── FILTROS ── */
@@ -49,13 +59,15 @@
 
 .filtro-btn {
   font-size: 0.75rem;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 999px;
   border: 1px solid #d1d5db;
   background: #fff;
   color: #6b7280;
   cursor: pointer;
   transition: all 0.15s;
+  /* Evita el zoom automático en iOS al tocar controles pequeños */
+  touch-action: manipulation;
 }
 
 .filtro-btn:hover {
@@ -74,6 +86,8 @@
   flex: 1;
   overflow-y: auto;
   padding: 8px;
+  /* Scroll suave con inercia en iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 .estado-mensaje {
@@ -81,20 +95,43 @@
   color: #9ca3af;
   font-size: 0.875rem;
   padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 .estado-mensaje.error {
   color: #ef4444;
 }
 
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid #e5e7eb;
+  border-top-color: var(--verde-oscuro);
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
 /* ── TARJETA REGISTRO ── */
 .tarjeta-registro {
+  display: block;
+  width: 100%;
+  text-align: left;
   padding: 14px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   border: 1px solid transparent;
-  margin-bottom: 4px;
+  background: #fff;
+  margin-bottom: 6px;
   transition: all 0.15s;
+  font-family: inherit;
+  touch-action: manipulation;
 }
 
 .tarjeta-registro:hover {
@@ -110,6 +147,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
@@ -122,18 +160,37 @@
 
 .nombre-cientifico {
   font-style: italic;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: #111827;
   font-weight: 500;
   margin-bottom: 6px;
+  line-height: 1.3;
 }
 
 .tarjeta-meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 8px;
   font-size: 0.75rem;
   color: #6b7280;
   margin-bottom: 4px;
+}
+
+.meta-habito {
+  background: var(--verde-claro);
+  color: var(--verde-oscuro);
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.meta-registrador {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .fecha {
@@ -143,12 +200,13 @@
 
 /* ── PILLS DE ESTADO ── */
 .estado-pill {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .estado-revision {
@@ -176,6 +234,25 @@
   flex: 1;
   overflow-y: auto;
   background: #f9fafb;
+  -webkit-overflow-scrolling: touch;
+}
+
+.btn-volver {
+  /* Oculto en escritorio, se muestra solo en móvil */
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: var(--verde-oscuro);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin: 12px 12px 0;
+  cursor: pointer;
+  font-family: inherit;
+  touch-action: manipulation;
 }
 
 .ficha-vacia {
@@ -186,6 +263,7 @@
   height: 100%;
   color: #9ca3af;
   gap: 16px;
+  padding: 40px 24px;
 }
 
 .ficha-vacia-icono {
@@ -196,4 +274,72 @@
   font-size: 0.9rem;
   text-align: center;
   max-width: 260px;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Tablet
+   ═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .columna-lista {
+    width: 300px;
+    min-width: 300px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Móvil (iOS / Android)
+   Una sola columna: se ve la lista, y al
+   seleccionar un registro el detalle ocupa
+   toda la pantalla con botón de volver.
+   ═══════════════════════════════════════════ */
+@media (max-width: 720px) {
+  .panel-validacion {
+    /* Usa la altura real del viewport en móviles (evita saltos con la barra del navegador) */
+    height: 100dvh;
+    position: relative;
+  }
+
+  .columna-lista {
+    width: 100%;
+    min-width: 0;
+    border-right: none;
+    /* Respeta el notch / barra inferior en iOS */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .columna-ficha {
+    display: none;
+  }
+
+  /* Cuando hay un registro seleccionado: ocultamos la lista y mostramos el detalle */
+  .panel-validacion.detalle-abierto .columna-lista {
+    display: none;
+  }
+
+  .panel-validacion.detalle-abierto .columna-ficha {
+    display: block;
+    width: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .btn-volver {
+    display: inline-flex;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+
+  .lista-header {
+    padding: 16px;
+  }
+
+  .tarjeta-registro {
+    padding: 16px;
+  }
+
+  /* Objetivos táctiles más cómodos en móvil */
+  .filtro-btn {
+    padding: 7px 14px;
+    font-size: 0.8rem;
+  }
 }

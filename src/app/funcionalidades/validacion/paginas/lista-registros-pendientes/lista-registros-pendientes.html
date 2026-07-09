@@ -1,9 +1,13 @@
-<div class="panel-validacion">
+<div class="panel-validacion" [class.detalle-abierto]="registroSeleccionado()">
   <!-- COLUMNA IZQUIERDA: lista -->
   <aside class="columna-lista">
     <div class="lista-header">
-      <h2>Registros pendientes</h2>
-      <span class="total-badge">{{ totalRegistros() }}</span>
+      <div class="lista-header-titulo">
+        <h2>Registros</h2>
+        <span class="pendientes-badge {{ badgeClase() }}">
+          {{ badgeTexto() }}
+        </span>
+      </div>
     </div>
 
     <!-- Filtros por estado -->
@@ -27,14 +31,18 @@
     <!-- Lista -->
     <div class="lista-contenido">
       @if (cargando()) {
-        <div class="estado-mensaje">Cargando registros...</div>
+        <div class="estado-mensaje">
+          <div class="spinner"></div>
+          Cargando registros...
+        </div>
       } @else if (error()) {
         <div class="estado-mensaje error">{{ error() }}</div>
       } @else if (registros().length === 0) {
         <div class="estado-mensaje">No hay registros para mostrar.</div>
       } @else {
         @for (registro of registros(); track registro.id) {
-          <div
+          <button
+            type="button"
             class="tarjeta-registro"
             [class.seleccionada]="registroSeleccionado() === registro.id"
             (click)="seleccionar(registro.id)">
@@ -46,13 +54,15 @@
             </div>
             <div class="nombre-cientifico">{{ registro.scientific_name }}</div>
             <div class="tarjeta-meta">
-              <span>{{ registro.habit }}</span>
-              <span>{{ registro.registrar.first_name }} {{ registro.registrar.paternal_last_name }}</span>
+              <span class="meta-habito">{{ getEtiquetaHabito(registro.habit) }}</span>
+              <span class="meta-registrador">
+                {{ registro.registrar.first_name }} {{ registro.registrar.paternal_last_name }}
+              </span>
             </div>
             <div class="fecha">
-              {{ registro.submitted_at | date:'dd/MM/yyyy' }}
+              {{ registro.submitted_at | date:'dd/MM/yyyy · HH:mm' }}
             </div>
-          </div>
+          </button>
         }
       }
     </div>
@@ -61,6 +71,13 @@
   <!-- COLUMNA DERECHA: ficha -->
   <main class="columna-ficha">
     @if (registroSeleccionado()) {
+      <!-- Barra de volver, solo visible en móvil -->
+      <button type="button" class="btn-volver" (click)="volverALista()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Volver a la lista
+      </button>
       <app-detalle-validacion
         [registroId]="registroSeleccionado()!"
         (estadoActualizado)="onEstadoActualizado()">

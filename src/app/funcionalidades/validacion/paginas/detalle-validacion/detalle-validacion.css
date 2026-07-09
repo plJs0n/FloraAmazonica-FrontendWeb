@@ -20,10 +20,27 @@
   color: #9ca3af;
   font-size: 0.875rem;
   padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 .ficha-estado.error {
   color: #ef4444;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  border: 2.5px solid #e5e7eb;
+  border-top-color: var(--verde-oscuro);
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
 }
 
 /* ── HEADER ── */
@@ -50,6 +67,7 @@
   font-style: italic;
   color: #111827;
   margin: 0 0 6px;
+  line-height: 1.2;
 }
 
 .header-meta {
@@ -58,10 +76,6 @@
   flex-wrap: wrap;
   font-size: 0.875rem;
   color: #6b7280;
-}
-
-.separador {
-  margin: 0 6px;
 }
 
 .btn-cambiar-estado {
@@ -75,6 +89,7 @@
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s;
+  touch-action: manipulation;
 }
 
 .btn-cambiar-estado:hover {
@@ -177,6 +192,10 @@
   overflow: hidden;
   border: 2px solid transparent;
   transition: border-color 0.15s;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  touch-action: manipulation;
 }
 
 .miniatura.activa {
@@ -223,24 +242,83 @@
 .dato-valor {
   font-size: 0.9rem;
   color: #111827;
+  word-break: break-word;
 }
 
-/* ── MORFOLOGÍA ── */
-.morfologia-seccion {
-  margin-bottom: 20px;
+/* ── ACORDEÓN MORFOLÓGICO ── */
+.acordeon {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.morfologia-seccion:last-child {
-  margin-bottom: 0;
+.acordeon-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s;
 }
 
-.morfologia-seccion-titulo {
-  font-size: 0.8rem;
+.acordeon-item.abierto {
+  border-color: var(--verde-oscuro);
+}
+
+.acordeon-cabecera {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f9fafb;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.15s;
+  touch-action: manipulation;
+}
+
+.acordeon-cabecera:hover {
+  background: var(--verde-claro);
+}
+
+.acordeon-titulo {
+  flex: 1;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #374151;
-  margin: 0 0 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #f3f4f6;
+  text-transform: capitalize;
+}
+
+.acordeon-conteo {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--verde-oscuro);
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+
+.acordeon-flecha {
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.acordeon-item.abierto .acordeon-flecha {
+  transform: rotate(180deg);
+}
+
+.acordeon-cuerpo {
+  padding: 16px 14px;
+  border-top: 1px solid #f3f4f6;
+  animation: desplegar 0.18s ease;
+}
+
+@keyframes desplegar {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── UBICACIÓN ── */
@@ -259,7 +337,9 @@
   gap: 4px;
 }
 
-/* ── RESPONSIVE ── */
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Móvil (iOS / Android)
+   ═══════════════════════════════════════════ */
 @media (max-width: 640px) {
   .ficha-contenedor {
     padding: 16px 12px;
@@ -272,6 +352,7 @@
 
   .btn-cambiar-estado {
     width: 100%;
+    padding: 12px 20px;
   }
 
   .seccion {
@@ -287,7 +368,16 @@
   }
 
   .miniatura img {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
+  }
+
+  .acordeon-cabecera {
+    padding: 14px;
+  }
+
+  /* Objetivo táctil más cómodo en la cabecera del acordeón */
+  .acordeon-titulo {
+    font-size: 0.9rem;
   }
 }

@@ -1,6 +1,9 @@
 <div class="ficha-contenedor">
   @if (cargando()) {
-    <div class="ficha-estado">Cargando ficha...</div>
+    <div class="ficha-estado">
+      <div class="spinner"></div>
+      Cargando ficha...
+    </div>
   } @else if (error()) {
     <div class="ficha-estado error">{{ error() }}</div>
   } @else if (ficha()) {
@@ -10,15 +13,13 @@
         <span class="tracking-code">{{ ficha()!.tracking_code }}</span>
         <h1 class="nombre-cientifico">{{ ficha()!.scientific_name }}</h1>
         <div class="header-meta">
-          <span class="pill-familia">{{ficha()!.family}}</span>
+          <span class="pill-familia">{{ ficha()!.family }}</span>
           <span class="pill-habito">{{ getEtiquetaHabito(ficha()!.habit) }}</span>
         </div>
       </div>
-      @if (!soloLectura) {
-        <button class="btn-cambiar-estado" (click)="abrirModal()">
-          Cambiar estado
-        </button>
-      }
+      <button class="btn-cambiar-estado" (click)="abrirModal()">
+        Cambiar estado
+      </button>
     </div>
 
     <!-- ESTADO ACTUAL -->
@@ -51,13 +52,14 @@
         </div>
         <div class="fotos-miniaturas">
           @for (foto of ficha()!.photos; track foto.id) {
-            <div
+            <button
+              type="button"
               class="miniatura"
               [class.activa]="fotoActiva() === foto.cloudinary_url"
               (click)="seleccionarFoto(foto.cloudinary_url)">
               <img [src]="foto.cloudinary_url" [alt]="getEtiquetaFoto(foto.photo_type)" aria-label="foto de registro"/>
               <span class="miniatura-label">{{ getEtiquetaFoto(foto.photo_type) }}</span>
-            </div>
+            </button>
           }
         </div>
       </div>
@@ -89,7 +91,7 @@
     </div>
 
     <!-- DATOS DASOMÉTRICOS -->
-    @if (ficha()!.height || ficha()!.cap || ficha()!.dap || ficha()!.crown_diameter_parallel || ficha()!.crown_diameter_perpendicular) {
+    @if (ficha()!.height || ficha()!.cap || ficha()!.dap || ficha()!.crown_diameter_parallel || ficha()!.crown_diameter_perpendicular || ficha()!.crown_base_height) {
       <div class="seccion">
         <h3 class="seccion-titulo">Datos dasométricos</h3>
         <div class="datos-grid">
@@ -123,27 +125,56 @@
               <span class="dato-valor">{{ ficha()!.crown_diameter_perpendicular }} m</span>
             </div>
           }
+          @if (ficha()!.crown_base_height) {
+            <div class="dato">
+              <span class="dato-label">Altura base de copa</span>
+              <span class="dato-valor">{{ ficha()!.crown_base_height }} m</span>
+            </div>
+          }
+          @if (ficha()!.bark_texture) {
+            <div class="dato">
+              <span class="dato-label">Textura de corteza</span>
+              <span class="dato-valor">{{ ficha()!.bark_texture }}</span>
+            </div>
+          }
         </div>
       </div>
     }
 
-    <!-- DATOS MORFOLÓGICOS DINÁMICOS -->
+    <!-- DATOS MORFOLÓGICOS DINÁMICOS (acordeón por sección) -->
     @if (getMorfologiaEntradas().length) {
       <div class="seccion">
         <h3 class="seccion-titulo">Características morfológicas</h3>
-        @for (seccion of getMorfologiaEntradas(); track seccion.seccion) {
-          <div class="morfologia-seccion">
-            <h4 class="morfologia-seccion-titulo">{{ seccion.seccion }}</h4>
-            <div class="datos-grid">
-              @for (item of seccion.campos; track item.campo) {
-                <div class="dato">
-                  <span class="dato-label">{{ item.campo }}</span>
-                  <span class="dato-valor">{{ formatearValor(item.valor) }}</span>
+        <div class="acordeon">
+          @for (seccion of getMorfologiaEntradas(); track seccion.seccion) {
+            <div class="acordeon-item" [class.abierto]="esSeccionAbierta(seccion.seccion)">
+              <button
+                type="button"
+                class="acordeon-cabecera"
+                (click)="toggleSeccion(seccion.seccion)"
+                [attr.aria-expanded]="esSeccionAbierta(seccion.seccion)">
+                <span class="acordeon-titulo">{{ seccion.seccion }}</span>
+                <span class="acordeon-conteo">{{ seccion.campos.length }}</span>
+                <svg class="acordeon-flecha" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              @if (esSeccionAbierta(seccion.seccion)) {
+                <div class="acordeon-cuerpo">
+                  <div class="datos-grid">
+                    @for (item of seccion.campos; track item.campo) {
+                      <div class="dato">
+                        <span class="dato-label">{{ item.etiqueta }}</span>
+                        <span class="dato-valor">{{ formatearValor(item.valor) }}</span>
+                      </div>
+                    }
+                  </div>
                 </div>
               }
             </div>
-          </div>
-        }
+          }
+        </div>
       </div>
     }
 
@@ -220,8 +251,8 @@
     }
   }
 
-  <!-- MODAL: solo si no es solo lectura -->
-  @if (!soloLectura && modalAbierto() && ficha()) {
+  <!-- MODAL -->
+  @if (modalAbierto() && ficha()) {
     <app-modal-estado
       [registroId]="ficha()!.id"
       [estadoActual]="ficha()!.status"
