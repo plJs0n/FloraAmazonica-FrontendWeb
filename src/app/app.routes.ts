@@ -28,6 +28,15 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'registros',
+        canActivate: [rolGuard],
+        data: { roles: ['administrador'] },
+        loadComponent: () =>
+          import('./funcionalidades/administrador/registros/vista-registros-admin').then(
+            m => m.VistaRegistrosAdmin
+          )
+      },
+      {
         path: 'catalogo',
         canActivate: [rolGuard],
         data: { roles: ['administrador'] },

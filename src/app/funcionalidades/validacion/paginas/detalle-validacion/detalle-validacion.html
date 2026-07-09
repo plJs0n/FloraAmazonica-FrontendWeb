@@ -17,9 +17,11 @@
           <span class="pill-habito">{{ getEtiquetaHabito(ficha()!.habit) }}</span>
         </div>
       </div>
-      <button class="btn-cambiar-estado" (click)="abrirModal()">
-        Cambiar estado
-      </button>
+      @if (!soloLectura) {
+        <button class="btn-cambiar-estado" (click)="abrirModal()">
+          Cambiar estado
+        </button>
+      }
     </div>
 
     <!-- ESTADO ACTUAL -->
@@ -251,8 +253,8 @@
     }
   }
 
-  <!-- MODAL -->
-  @if (modalAbierto() && ficha()) {
+  <!-- MODAL: solo si no es solo lectura -->
+  @if (!soloLectura && modalAbierto() && ficha()) {
     <app-modal-estado
       [registroId]="ficha()!.id"
       [estadoActual]="ficha()!.status"

@@ -43,22 +43,16 @@ export class BarraLateral {
       case 'administrador':
         return [
           { etiqueta: 'Gestión de usuarios', ruta: '/usuarios' },
+          { etiqueta: 'Registros', ruta: '/registros' },
           {
             etiqueta: 'Administrar catálogo',
             subElementos: [
-              {
-                etiqueta: 'Familias y especies',
-                ruta: '/catalogo/familias-especies',
-              },
-              {
-                etiqueta: 'Formulario',
-                ruta: '/catalogo/formulario',
-              },
+              { etiqueta: 'Familias y especies', ruta: '/catalogo/familias-especies' },
+              { etiqueta: 'Formulario', ruta: '/catalogo/formulario' },
             ],
           },
           { etiqueta: 'Mi perfil', ruta: '/mi-perfil' },
         ];
-
       case 'validador':
         return [
           { etiqueta: 'Validación', ruta: '/validacion' },

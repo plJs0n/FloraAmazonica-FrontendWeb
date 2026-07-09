@@ -25,6 +25,7 @@ interface SeccionMorfologica {
 })
 export class DetalleValidacion implements OnInit, OnChanges {
   @Input() registroId!: string;
+  @Input() soloLectura = false;
   @Output() estadoActualizado = new EventEmitter<void>();
 
   ficha = signal<FichaRegistro | null>(null);

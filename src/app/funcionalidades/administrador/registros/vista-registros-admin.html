@@ -1,0 +1,139 @@
+<div class="vista-admin-registros">
+
+  <!-- SECCIÓN SUPERIOR: cards de conteo -->
+  <div class="seccion-conteos">
+    <div class="conteos-header">
+      <h1>Registros</h1>
+      <span class="subtitulo">Resumen general del sistema</span>
+    </div>
+
+    <div class="cards-conteo">
+      @for (tarjeta of tarjetasEstado; track tarjeta.valor) {
+        <button
+          class="card-conteo {{ tarjeta.clase }}"
+          [class.card-activa]="filtroEstado() === tarjeta.valor"
+          (click)="filtrarPorTarjeta(tarjeta.valor)">
+          <div class="card-fila-numero">
+            @if (tarjeta.valor === 'validado') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            }
+            @if (tarjeta.valor === 'en_revision') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path stroke-linecap="round" d="M12 6v6l4 2"/>
+              </svg>
+            }
+            @if (tarjeta.valor === 'observado') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            }
+            @if (tarjeta.valor === 'rechazado') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            }
+            <span class="card-numero">
+              @if (cargandoConteos()) { — } @else { {{ getConteo(tarjeta.valor) }} }
+            </span>
+          </div>
+          <div class="card-etiqueta">{{ tarjeta.etiqueta }}</div>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- SECCIÓN INFERIOR: panel de lista + ficha -->
+  <div class="seccion-lista">
+
+    <!-- COLUMNA IZQUIERDA -->
+    <aside class="columna-lista">
+      <div class="lista-header">
+        <h2>Todos los registros</h2>
+        <span class="total-badge">{{ totalRegistros() }}</span>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros">
+        <button
+          class="filtro-btn"
+          [class.activo]="filtroEstado() === undefined"
+          (click)="aplicarFiltro(undefined)">
+          Todos
+        </button>
+        @for (estado of estados; track estado.valor) {
+          <button
+            class="filtro-btn"
+            [class.activo]="filtroEstado() === estado.valor"
+            (click)="aplicarFiltro(estado.valor)">
+            {{ estado.etiqueta }}
+          </button>
+        }
+      </div>
+
+      <!-- Lista -->
+      <div class="lista-contenido">
+        @if (cargando()) {
+          <div class="estado-mensaje">Cargando registros...</div>
+        } @else if (error()) {
+          <div class="estado-mensaje error">{{ error() }}</div>
+        } @else if (registros().length === 0) {
+          <div class="estado-mensaje">No hay registros para mostrar.</div>
+        } @else {
+          @for (registro of registros(); track registro.id) {
+            <div
+              class="tarjeta-registro"
+              [class.seleccionada]="registroSeleccionado() === registro.id"
+              (click)="seleccionar(registro.id)">
+              <div class="tarjeta-header">
+                <span class="codigo">{{ registro.tracking_code }}</span>
+                <span class="estado-pill {{ getClaseEstado(registro.status) }}">
+                  {{ getEtiquetaEstado(registro.status) }}
+                </span>
+              </div>
+              <div class="nombre-cientifico">{{ registro.scientific_name }}</div>
+              <div class="tarjeta-meta">
+                <span>{{ registro.habit }}</span>
+                <span>{{ registro.registrar.first_name }} {{ registro.registrar.paternal_last_name }}</span>
+              </div>
+              <div class="fecha">{{ registro.submitted_at | date:'dd/MM/yyyy' }}</div>
+            </div>
+          }
+        }
+      </div>
+    </aside>
+
+    <!-- COLUMNA DERECHA: ficha solo lectura -->
+    <main class="columna-ficha">
+      @if (registroSeleccionado()) {
+        <div class="ficha-readonly-wrapper">
+          <div class="readonly-banner">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            Vista de solo lectura — el administrador no puede cambiar el estado de un registro
+          </div>
+          <app-detalle-validacion
+            [registroId]="registroSeleccionado()!"
+            [soloLectura]="true"
+            (estadoActualizado)="cargarRegistros()">
+          </app-detalle-validacion>
+        </div>
+      } @else {
+        <div class="ficha-vacia">
+          <div class="ficha-vacia-icono">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <p>Selecciona un registro de la lista para revisar su ficha completa.</p>
+        </div>
+      }
+    </main>
+
+  </div>
+</div>
