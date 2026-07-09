@@ -83,6 +83,18 @@
           <span class="dato-label">Hábito</span>
           <span class="dato-valor">{{ getEtiquetaHabito(ficha()!.habit) }}</span>
         </div>
+        @if (ficha()!.local_name) {
+          <div class="dato">
+            <span class="dato-label">Nombre local</span>
+            <span class="dato-valor">{{ ficha()!.local_name }}</span>
+          </div>
+        }
+        @if (ficha()!.life_type) {
+          <div class="dato">
+            <span class="dato-label">Tipo de vida</span>
+            <span class="dato-valor">{{ ficha()!.life_type }}</span>
+          </div>
+        }
         @if (ficha()!.country_distribution && ficha()!.country_distribution.length) {
           <div class="dato dato-ancho">
             <span class="dato-label">Distribución</span>
