@@ -196,7 +196,7 @@
 
       @if (vistaActiva === 'app') {
         <div class="app-descarga">
-          <div class="app-qr-card">
+          <a class="app-qr-card" [href]="LINK_ANDROID" target="_blank" rel="noopener">
             <img src="qrAndroid.png" alt="QR Android" class="app-qr-img" />
             <div class="app-qr-plataforma">
               <svg viewBox="0 0 512 601" fill="currentColor" aria-hidden="true">
@@ -204,9 +204,9 @@
               </svg>
               <span>Android</span>
             </div>
-          </div>
+          </a>
 
-          <div class="app-qr-card">
+          <a class="app-qr-card" [href]="LINK_IOS" target="_blank" rel="noopener">
             <img src="qrIOs.png" alt="QR iOS" class="app-qr-img" />
             <div class="app-qr-plataforma">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
@@ -214,7 +214,7 @@
               </svg>
               <span>iOS</span>
             </div>
-          </div>
+          </a>
         </div>
       }
 
