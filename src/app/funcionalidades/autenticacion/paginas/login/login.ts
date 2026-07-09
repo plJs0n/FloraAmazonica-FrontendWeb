@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -16,12 +16,13 @@ type CampoRegistro = 'first_name' | 'paternal_last_name' | 'maternal_last_name' 
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login implements AfterViewInit {
+export class Login implements AfterViewInit, OnDestroy {
 
   @ViewChild('vid1') vid1!: ElementRef<HTMLVideoElement>;
   @ViewChild('vid2') vid2!: ElementRef<HTMLVideoElement>;
+  @ViewChild('typewriterEl') typewriterEl?: ElementRef<HTMLSpanElement>;
 
-  vistaActiva: 'login' | 'registro' = 'login';
+  vistaActiva: 'login' | 'registro' | 'app' = 'login';
   mostrarModalRegistrador = false;
 
   loginForm = { email: '', password: '' };
@@ -53,6 +54,13 @@ export class Login implements AfterViewInit {
   readonly LINK_ANDROID = 'https://drive.google.com/drive/folders/1IpxPiaUzpCJy7avGfAiVEcNlUR04jWYV?usp=sharing';
   readonly LINK_IOS     = 'https://drive.google.com/drive/folders/1NB3ok5NjitdD9GjYn-_jtDY-qCtNicxi?usp=sharing';
 
+  // ── Typewriter ──
+  private readonly PALABRAS = ['EXPLORA', 'REGISTRA', 'PROTEGE', 'DESCUBRE'];
+  private twIndice = 0;
+  private twChar = 0;
+  private twBorrando = false;
+  private twTimeout: ReturnType<typeof setTimeout> | null = null;
+
   constructor(
     private autenticacion: AutenticacionServicio,
     private router: Router,
@@ -61,6 +69,7 @@ export class Login implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
+    // Videos
     const v1 = this.vid1.nativeElement;
     const v2 = this.vid2.nativeElement;
 
@@ -73,7 +82,54 @@ export class Login implements AfterViewInit {
     v1.style.opacity = '1';
     v2.style.opacity = '0';
     v1.play().catch(() => {});
+
+    // Typewriter
+    this.twTimeout = setTimeout(() => this.tickTypewriter(), 150);
   }
+
+  ngOnDestroy(): void {
+    if (this.twTimeout) clearTimeout(this.twTimeout);
+  }
+
+  private tickTypewriter(): void {
+    const el = this.typewriterEl?.nativeElement;
+
+    // Si el elemento no está visible (vista "Nuestra App"), reintentar sin avanzar
+    if (!el) {
+      this.twTimeout = setTimeout(() => this.tickTypewriter(), 300);
+      return;
+    }
+
+    const palabra = this.PALABRAS[this.twIndice];
+
+    if (!this.twBorrando) {
+      // Escribiendo
+      this.twChar++;
+      el.textContent = palabra.slice(0, this.twChar);
+
+      if (this.twChar === palabra.length) {
+        this.twBorrando = true;
+        this.twTimeout = setTimeout(() => this.tickTypewriter(), 1800);
+      } else {
+        this.twTimeout = setTimeout(() => this.tickTypewriter(), 100);
+      }
+    } else {
+      // Borrando
+      this.twChar--;
+      el.textContent = palabra.slice(0, this.twChar);
+
+      if (this.twChar === 0) {
+        this.twBorrando = false;
+        this.twIndice = (this.twIndice + 1) % this.PALABRAS.length;
+        this.twTimeout = setTimeout(() => this.tickTypewriter(), 300);
+      } else {
+        this.twTimeout = setTimeout(() => this.tickTypewriter(), 55);
+      }
+    }
+  }
+
+  // ── Resto de lógica original sin cambios ──
+
   onVideoTerminado(indice: number): void {
     const actual    = indice === 0 ? this.vid1.nativeElement : this.vid2.nativeElement;
     const siguiente = indice === 0 ? this.vid2.nativeElement : this.vid1.nativeElement;
@@ -97,7 +153,7 @@ export class Login implements AfterViewInit {
     setTimeout(() => { document.getElementById('password-registro')?.focus(); }, 0);
   }
 
-  cambiarVista(vista: 'login' | 'registro'): void {
+  cambiarVista(vista: 'login' | 'registro' | 'app'): void {
     this.vistaActiva = vista;
     this.limpiarEstado();
     this.limpiarFormularioLogin();
